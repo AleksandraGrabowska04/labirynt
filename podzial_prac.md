@@ -23,7 +23,8 @@
     - [ ] graficzna reprezentacja labiryntu (tygodnie 1-5).
         - [ ] Przykład reprezentowania graficznego labiryntów tzw. "hard-coded" (tygodnie 1-2).
         - [ ] Generowanie reprezentacji graficznej labiryntów na podstawie labiryntu zapisanego w postaci tekstowej (pliku ".txt") (tygodnie 3-5).
-    - [ ] graficzna reprezentacja/animacja ścieżek (tygodnie 5-9).
+    - [ ] graficzna reprezentacja/animacja ścieżek (tygodnie 5-9). \
+    \
 \
 tydzień 1 = 15.10.2024 - 21.10.2024 \
 tydzień 2 = 22.10.2024 - 28.10.2024 \
