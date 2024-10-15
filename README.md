@@ -6,6 +6,7 @@
     - dfs
     - bfs
     - Dijkstra
+    - algorytm gwiazdka (A*)
 - generowanie wykresów (porównanie efektywności poszczególnych algorytmów na podstawie robionych przez nie liczby kroków)
 - graficzna reprezentacja labiryntów i ścieżek obieranych przez poszczególny algorytm
 
@@ -13,7 +14,7 @@
 
 ## Lista technologii:
 
-- C
+- C/C++
 - Python
     - matplotlib (generowanie wykresów)
 - Java
