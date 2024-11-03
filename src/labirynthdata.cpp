@@ -18,6 +18,7 @@ Labirynth::Labirynth(int rows, int cols) : rows(rows), cols(cols)
 struct Position {
     int row;
     int col;
+    int nodeIdx;
     bool operator=(const Position& pos) {
         return row == pos.row && col == pos.col;
     }
@@ -44,9 +45,9 @@ MazeGraph Labirynth::ToMazeGraph()
             }
         }
     }
-    MazeGraph graph(rows * cols);
+    MazeGraph graph(0);
+    startPos.nodeIdx = graph.AddVertex(startPos.row, startPos.col);
     posStack.push(startPos);
-    graph.AddVertex(startPos.row, startPos.col);
     
     while(!posStack.empty()) {
         Position pos = posStack.top();
@@ -58,27 +59,43 @@ MazeGraph Labirynth::ToMazeGraph()
             visited.insert(combinedIndex);
             int row = pos.row;
             int col = pos.col;
-            int currIdx = graph.AddVertex(row, col);
+            int currIdx = pos.nodeIdx;
             std::vector<Position> available;
             if(row > 0 && !Get(row - 1, col)) 
             {
-                available.push_back({row - 1, col});
-                ADD_VERTEX_WITH_EDGE(graph, row - 1, col, currIdx);
+                uint64_t vIdx = (row - 1) * cols + col;
+                if(visited.find(vIdx) == visited.end())
+                {
+                    ADD_VERTEX_WITH_EDGE(graph, row - 1, col, currIdx);
+                    available.push_back({row - 1, col, idx});
+                }
             }
             if(row < rows - 1 && !Get(row + 1, col)) 
             {
-                available.push_back({row + 1, col});
-                ADD_VERTEX_WITH_EDGE(graph, row + 1, col, currIdx);
+                uint64_t vIdx = (row + 1) * cols + col;
+                if(visited.find(vIdx) == visited.end())
+                {
+                    ADD_VERTEX_WITH_EDGE(graph, row + 1, col, currIdx);
+                    available.push_back({row + 1, col, idx});
+                }
             }
             if(col > 0 && !Get(row, col - 1)) 
             {
-                available.push_back({row, col - 1});
-                ADD_VERTEX_WITH_EDGE(graph, row, col - 1, currIdx);
+                uint64_t vIdx = row * cols + (col - 1);
+                if(visited.find(vIdx) == visited.end())
+                {
+                    ADD_VERTEX_WITH_EDGE(graph, row, col - 1, currIdx);
+                    available.push_back({row, col - 1, idx});
+                }
             }
             if(col < cols - 1 && !Get(row, col + 1)) 
             {
-                available.push_back({row, col + 1});
-                ADD_VERTEX_WITH_EDGE(graph, row, col + 1, currIdx);
+                uint64_t vIdx = row * cols + (col + 1);
+                if(visited.find(vIdx) == visited.end())
+                {
+                    ADD_VERTEX_WITH_EDGE(graph, row, col + 1, currIdx);
+                    available.push_back({row, col + 1, idx});
+                }
             }
 
             for(auto it = available.begin(); it != available.end(); it++) 

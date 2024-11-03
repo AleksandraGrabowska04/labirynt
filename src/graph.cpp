@@ -5,7 +5,6 @@ MazeGraph::MazeGraph(int V)
 {
     numV = 0;
     adj.resize(V);
-    indexedNodeData.resize(V);
     for(int i = 0; i < V; i++)
     {
         adj[i] = std::make_shared<std::set<int>>();
@@ -18,6 +17,7 @@ int MazeGraph::AddVertex(int x = -1, int y = -1)
     node->y = y;
     node->visited = false;
     indexedNodeData.push_back(node);
+    adj.push_back(std::make_shared<std::set<int>>());
     return numV++;
 }
 void MazeGraph::AddEdge(int v, int w)
@@ -26,12 +26,12 @@ void MazeGraph::AddEdge(int v, int w)
         throw std::invalid_argument("Vertex index out of bounds");
     if(v == w)
         throw std::invalid_argument("Self loops are not allowed");
-    if(adj[v]->find(w) != adj[v]->end())
+    auto adjSet = adj.at(v);
+    if(adjSet->find(w) != adjSet->end())
         throw std::invalid_argument("Edge already exists");
 
     adj[v]->insert(w);
     adj[w]->insert(v);
-    //numV++;
 }
 void MazeGraph::Print()
 {
