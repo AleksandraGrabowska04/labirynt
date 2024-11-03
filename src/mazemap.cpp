@@ -3,10 +3,10 @@
 #include <fstream>
 #include <cstdint>
 #include <stack>
-#include "labirynthdata.h"
+#include "mazemap.h"
 #include "graph.h"
 
-Labirynth::Labirynth(int rows, int cols) : rows(rows), cols(cols) 
+MazeMap::MazeMap(int rows, int cols) : rows(rows), cols(cols) 
 {
     lab.resize(rows * cols);
     for(int i = 0; i < rows*cols; i++) 
@@ -28,7 +28,7 @@ struct Position {
     int idx = graph.AddVertex(row, col); \
     graph.AddEdge(origIdx, idx);
 
-MazeGraph Labirynth::ToMazeGraph()
+MazeGraph MazeMap::ToMazeGraph()
 {
     std::set<uint64_t> visited; // this is uniquely identifying a position in the maze like a linear array would
     std::stack<Position> posStack;
@@ -107,17 +107,17 @@ MazeGraph Labirynth::ToMazeGraph()
     return graph;
 }
 
-void Labirynth::MarkWall(int row, int col) 
+void MazeMap::MarkWall(int row, int col) 
 {
     lab[row * cols + col] = true;
 }
 
-void Labirynth::ClearWall(int row, int col) 
+void MazeMap::ClearWall(int row, int col) 
 {
     lab[row * cols + col] = false;
 }
 
-void Labirynth::Print()
+void MazeMap::Print()
 {
     for (int i = 0; i < rows; i++) 
     {
@@ -129,7 +129,7 @@ void Labirynth::Print()
     }
 }
 
-void Labirynth::ExportText(const char* filename) 
+void MazeMap::ExportText(const char* filename) 
 {
     std::fstream file;
     file.open(filename, std::ios::out);
@@ -143,7 +143,7 @@ void Labirynth::ExportText(const char* filename)
     }
 }
 
-void Labirynth::ExportBinary(const char* filename) 
+void MazeMap::ExportBinary(const char* filename) 
 {
     std::fstream file;
     file.open(filename, std::ios::out | std::ios::binary);
@@ -164,7 +164,7 @@ void Labirynth::ExportBinary(const char* filename)
     file.close();
 }
 
-void Labirynth::ReadBinary(const char* filename)
+void MazeMap::ReadBinary(const char* filename)
 {
     std::fstream file;
     file.open(filename, std::ios::in | std::ios::binary);
@@ -186,12 +186,12 @@ void Labirynth::ReadBinary(const char* filename)
     file.close();
 }
 
-bool Labirynth::Get(int row, int col)
+bool MazeMap::Get(int row, int col)
 {
     return lab[row * cols + col];
 }
 
-void Labirynth::GetFullRow(int row, std::vector<bool>& row_data)
+void MazeMap::GetFullRow(int row, std::vector<bool>& row_data)
 {
     row_data.resize(cols);
     for (int i = 0; i < cols; i++)
@@ -200,7 +200,7 @@ void Labirynth::GetFullRow(int row, std::vector<bool>& row_data)
     }
 }
 
-void Labirynth::GetFullCol(int col, std::vector<bool>& col_data)
+void MazeMap::GetFullCol(int col, std::vector<bool>& col_data)
 {
     col_data.resize(rows);
     for (int i = 0; i < rows; i++)
@@ -209,7 +209,7 @@ void Labirynth::GetFullCol(int col, std::vector<bool>& col_data)
     }
 }
 
-void Labirynth::Clear()
+void MazeMap::Clear()
 {
     lab.clear();
 }

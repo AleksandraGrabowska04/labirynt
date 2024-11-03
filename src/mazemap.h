@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 #include "graph.h"
-class Labirynth {
+class MazeMap {
     std::vector<bool> lab;
     int rows, cols;
 
 public:
     // Create labirynth of size rows x cols
-    Labirynth(int rows, int cols);
+    MazeMap(int rows, int cols);
     // Create a graph representation of the labirynth
     MazeGraph ToMazeGraph();
     // Mark wall at position (row, col) (sets bit to 1)
