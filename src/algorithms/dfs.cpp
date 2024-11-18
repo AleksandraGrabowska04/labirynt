@@ -5,19 +5,26 @@
 
 namespace Algorithms 
 {
-    void dfs(MazeGraph& mazeGraph, int startNode, int endNode, std::stack<int>& graphStack, std::vector<int>& nodeVisitOrder)
+    std::vector<int> dfs(MazeGraph& mazeGraph, int startNode, int endNode, std::vector<int>& nodeVisitOrder)
     {
         std::set<int> visited;
+        std::stack<int> graphStack;
+        std::stack<std::vector<int>> pathStack;
+        //std::vector<int> bestPath;
         graphStack.push(startNode);
+        pathStack.push(std::vector<int>{startNode});
         while(!graphStack.empty())
         {
             int currentNode = graphStack.top();
             graphStack.pop();
+            std::vector<int> path = pathStack.top();
+            pathStack.pop();
+            
             if(currentNode == endNode)
             {
                 visited.insert(currentNode);
                 nodeVisitOrder.push_back(currentNode);
-                break;
+                return path;
             }
 
             if(visited.find(currentNode) == visited.end())
@@ -25,11 +32,14 @@ namespace Algorithms
                 visited.insert(currentNode);
                 nodeVisitOrder.push_back(currentNode);
                 std::vector<int> adjNodes = mazeGraph.GetAdjacentNodeIndicies(currentNode);
-                for(auto it = adjNodes.begin(); it != adjNodes.end(); it++)
+                for(auto neighbor = adjNodes.begin(); neighbor != adjNodes.end(); neighbor++)
                 {
-                    if(visited.find(*it) == visited.end())
+                    if(visited.find(*neighbor) == visited.end())
                     {
-                        graphStack.push(*it);
+                        graphStack.push(*neighbor);
+                        std::vector<int> newPath = path;
+                        newPath.push_back(*neighbor);
+                        pathStack.push(newPath);
                     }
                 }
             }

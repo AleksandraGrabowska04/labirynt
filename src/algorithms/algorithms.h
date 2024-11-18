@@ -6,7 +6,8 @@
 namespace Algorithms
 {
     // accepts mazeGraph, startNode and endNode as inputs, 
-    // and outputs the path from startNode to endNode, as well as all the visited nodes in order
-    void dfs(MazeGraph& mazeGraph, int startNode, int endNode,
-        std::stack<int>& graphStack, std::vector<int>& nodeVisitOrder);
+    // returns the path from startNode to endNode, outNodeVisitOrder is a std::vector reference
+    // and gets filled with all the nodes visited in the order they were visited
+    std::vector<int> dfs(MazeGraph& mazeGraph, int startNode, int endNode,
+        std::vector<int>& outNodeVisitOrder);
 }
