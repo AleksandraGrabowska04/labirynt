@@ -18,5 +18,8 @@ public:
     int AddVertex(int x, int y);
     void AddEdge(int v, int w);
     void Print();
+    // Get the adjacent nodes of a vertex, as a set of pointers to MazeGraphNode
     std::set<std::shared_ptr<MazeGraphNode>> GetAdjacentNodes(int v);
+    // Get the adjacent nodes of a vertex, as a vector of raw indices
+    std::vector<int> GetAdjacentNodeIndicies(int v);
 };
