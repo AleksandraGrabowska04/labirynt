@@ -37,7 +37,8 @@ void MazeGraph::Print()
 {
     for(int i = 0; i < numV; i++)
     {
-        std::cout << "Vertex " << i << " is connected to: ";
+        auto data = indexedNodeData[i];
+        std::cout << "Vertex " << i << "(x: " << data->y << " y: " << data->x << ") is connected to: ";
         for(auto it = adj[i]->begin(); it != adj[i]->end(); it++)
         {
             std::cout << *it << " ";
@@ -56,6 +57,20 @@ std::set<std::shared_ptr<MazeGraphNode>> MazeGraph::GetAdjacentNodes(int v)
     for(auto it = connectedVerts->begin(); it != connectedVerts->end(); it++)
     {
         connectedNodes.insert(indexedNodeData[*it]);
+    }
+    return connectedNodes;
+}
+std::vector<int> MazeGraph::GetAdjacentNodeIndicies(int v)
+{
+    std::vector<int> connectedNodes;
+    if(v >= numV || v < 0)
+    {
+        throw std::invalid_argument("Vertex index out of bounds");
+    }
+    auto connectedVerts = adj[v];
+    for(auto it = connectedVerts->begin(); it != connectedVerts->end(); it++)
+    {
+        connectedNodes.push_back(*it);
     }
     return connectedNodes;
 }
