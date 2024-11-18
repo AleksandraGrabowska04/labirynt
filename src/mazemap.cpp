@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cstdint>
 #include <stack>
+#include <initializer_list>
 #include "mazemap.h"
 #include "graph.h"
 
@@ -12,6 +13,20 @@ MazeMap::MazeMap(int rows, int cols) : rows(rows), cols(cols)
     for(int i = 0; i < rows*cols; i++) 
     {
         lab[i] = false;
+    }
+}
+
+MazeMap::MazeMap(int rows, int cols, std::initializer_list<std::pair<int,int>> initializerList)
+    : rows(rows), cols(cols) 
+{
+    lab.resize(rows * cols);
+    for(int i = 0; i < rows*cols; i++) 
+    {
+        lab[i] = false;
+    }
+    for(auto it = initializerList.begin(); it != initializerList.end(); it++)
+    {
+        MarkWall(it->first, it->second);
     }
 }
 
