@@ -8,8 +8,9 @@ std::vector<int> Algorithms::bfs(MazeGraph& mazeGraph, int startNode, int endNod
 {
     std::set<int> visited;
     std::queue<int> graphQueue;
+    // this queue will save each new path taken in the graph as a vector
+    // when we get to the end we can return the path from the front of the queue
     std::queue<std::vector<int>> pathQueue;
-    //std::vector<int> bestPath;
     graphQueue.push(startNode);
     pathQueue.push(std::vector<int>{startNode});
     while(!graphQueue.empty())
