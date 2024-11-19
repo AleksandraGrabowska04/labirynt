@@ -156,9 +156,15 @@ char** translate_cells(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_
     
 }
 
-//prints a maze in its "translated" (check "translate_cells" function) form.
+//prints and writes to a file maze in its "translated" (check "translate_cells" function) form.
 void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH]){
     //kept this way (in 4-dimensions) because "unfortunately" it's objectively more readable.
+
+    //our file pointer
+    FILE *fptr;
+
+    //open a file in writing mode
+    fptr = fopen("maze.txt", "w");
 
     for(int maze_x = 0; maze_x < MAZE_HEIGHT; maze_x++){
 
@@ -168,14 +174,23 @@ void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH]){
             {
                 for (int cell_y = 0; cell_y < TRANSL_CELL_WDTH; cell_y++)
                 {
+                    //print on terminal
                     printf("%d", translated_maze[maze_x][maze_y][cell_x][cell_y]); //kept this way (in 4-dimensions) because it's objectively more readable.
+                    //Print to a file
+                    fprintf(fptr, "%d", translated_maze[maze_x][maze_y][cell_x][cell_y]);
                 }
             }
+            //for terminal
             printf("\n");
+            //and for the file
+            fprintf(fptr, "\n");
 
         }
 
     }
+
+    //closes the file
+    fclose(fptr); 
 }
 
 int main(){
