@@ -10,7 +10,8 @@
 ### Krystian Dzikiewicz:
 
 - [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2).
-- [ ] Algorytmy dfs i bfs (tygodnie 3-5).
+- [x] Algorytmy dfs i bfs (tygodnie 3-5).
+- [ ] Przygotowanie systemu testów jednostkówych + integracja GitHub CI (tydzień 6)
 
 ### Ola Grabowska:
 
