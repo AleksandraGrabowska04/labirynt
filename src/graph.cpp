@@ -15,7 +15,6 @@ int MazeGraph::AddVertex(int x = -1, int y = -1)
     std::shared_ptr<MazeGraphNode> node = std::make_shared<MazeGraphNode>();
     node->x = x;
     node->y = y;
-    node->visited = false;
     indexedNodeData.push_back(node);
     adj.push_back(std::make_shared<std::set<int>>());
     return numV++;
@@ -73,4 +72,24 @@ std::vector<int> MazeGraph::GetAdjacentNodeIndicies(int v)
         connectedNodes.push_back(*it);
     }
     return connectedNodes;
+}
+std::shared_ptr<MazeGraphNode> MazeGraph::GetGraphNode(int v)
+{
+    if(v >= numV || v < 0)
+    {
+        throw std::invalid_argument("Vertex index out of bounds");
+    }
+    return indexedNodeData[v];
+}
+int MazeGraph::GetIndexFromCoordinates(int row, int col)
+{
+    for(int i = 0; i < numV; i++)
+    {
+        auto data = indexedNodeData[i];
+        if(data->x == row && data->y == col)
+        {
+            return i;
+        }
+    }
+    return -1;
 }

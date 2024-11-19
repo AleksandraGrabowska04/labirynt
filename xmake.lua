@@ -2,8 +2,22 @@ add_rules("mode.debug", "mode.release")
 
 target("labirynth")
     set_kind("binary")
-    add_files("src/**.cpp")
+    add_files("src/*.cpp")
+    add_files("src/algorithms/*.cpp")
     add_includedirs("src")
+
+target("maze_test")
+    set_kind("binary")
+    add_files("src/tests/**.cpp")
+    add_files("src/*.cpp")
+    add_files("src/algorithms/*.cpp")
+    add_includedirs("src")
+    add_includedirs("thirdparty/googletest/googletest/include")
+    add_includedirs("thirdparty/googletest/googletest/")
+    add_files("thirdparty/googletest/googletest/src/gtest-all.cc")
+    add_files("thirdparty/googletest/googletest/src/gtest_main.cc")
+    remove_files("src/main.cpp")
+    
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io

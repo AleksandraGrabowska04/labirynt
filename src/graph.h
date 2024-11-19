@@ -6,9 +6,7 @@
 struct MazeGraphNode {
     int x;
     int y;
-    bool visited;
 };
-
 class MazeGraph {
     int numV;
     std::vector<std::shared_ptr<MazeGraphNode>> indexedNodeData;
@@ -18,8 +16,11 @@ public:
     int AddVertex(int x, int y);
     void AddEdge(int v, int w);
     void Print();
+    int GetNumVertices() { return numV; }
+    int GetIndexFromCoordinates(int row, int col);
     // Get the adjacent nodes of a vertex, as a set of pointers to MazeGraphNode
     std::set<std::shared_ptr<MazeGraphNode>> GetAdjacentNodes(int v);
     // Get the adjacent nodes of a vertex, as a vector of raw indices
     std::vector<int> GetAdjacentNodeIndicies(int v);
+    std::shared_ptr<MazeGraphNode> GetGraphNode(int v);
 };
