@@ -74,3 +74,11 @@ std::vector<int> MazeGraph::GetAdjacentNodeIndicies(int v)
     }
     return connectedNodes;
 }
+std::shared_ptr<MazeGraphNode> MazeGraph::GetGraphNode(int v)
+{
+    if(v >= numV || v < 0)
+    {
+        throw std::invalid_argument("Vertex index out of bounds");
+    }
+    return indexedNodeData[v];
+}
