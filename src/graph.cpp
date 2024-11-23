@@ -38,7 +38,7 @@ void MazeGraph::Print()
     for(int i = 0; i < numV; i++)
     {
         auto data = indexedNodeData[i];
-        std::cout << "Vertex " << i << "(x: " << data->y << " y: " << data->x << ") is connected to: ";
+        std::cout << "Vertex " << i << "(x: " << data->x << " y: " << data->y << ") is connected to: ";
         for(auto it = adj[i]->begin(); it != adj[i]->end(); it++)
         {
             std::cout << *it << " ";
