@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cstdint>
 #include <stack>
+#include <string>
+#include <sstream>
 #include <initializer_list>
 #include "mazemap.h"
 #include "graph.h"
@@ -43,23 +45,25 @@ struct Position {
     int idx = graph.AddVertex(row, col); \
     graph.AddEdge(origIdx, idx);
 
-MazeGraph MazeMap::ToMazeGraph()
+MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
 {
     std::set<uint64_t> visited; // this is uniquely identifying a position in the maze like a linear array would
     std::stack<Position> posStack;
     Position startPos;
-    for(int i=0; i<rows; i++)
-    {
-        for(int j=0; j<cols; j++)
-        {
-            if(!lab[i * cols + j])
-            {
-                startPos.row = i;
-                startPos.col = j;
-                break;
-            }
-        }
-    }
+    startPos.row = startPosRow;
+    startPos.col = startPosCol;
+    // for(int i=0; i<rows; i++)
+    // {
+    //     for(int j=0; j<cols; j++)
+    //     {
+    //         if(!lab[i * cols + j])
+    //         {
+    //             startPos.row = i;
+    //             startPos.col = j;
+    //             break;
+    //         }
+    //     }
+    // }
     MazeGraph graph(0);
     startPos.nodeIdx = graph.AddVertex(startPos.row, startPos.col);
     posStack.push(startPos);
@@ -156,6 +160,36 @@ void MazeMap::ExportText(const char* filename)
         }
         file << std::endl;
     }
+}
+
+void MazeMap::ReadText(const char* filename)
+{
+    std::fstream file;
+    file.open(filename, std::ios::in);
+    if(!file.is_open())
+    {
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return;
+    }
+    std::string cols;
+    std::getline(file, cols);
+    this->cols = std::stoi(cols);
+    this->rows = this->cols;
+    std::string line;
+    int row = 0;
+    while(std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        int col = 0;
+        while(std::getline(ss, line, ' '))
+        {
+            if(line == "1")
+                MarkWall(row, col);
+            col++;
+        }
+        row++;
+    }
+    file.close();
 }
 
 void MazeMap::ExportBinary(const char* filename) 

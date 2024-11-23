@@ -10,7 +10,7 @@ public:
     MazeMap(int rows, int cols);
     MazeMap(int rows, int cols, std::initializer_list<std::pair<int, int>> initializerList);
     // Create a graph representation of the labirynth
-    MazeGraph ToMazeGraph();
+    MazeGraph ToMazeGraph(int startPosRow, int startPosCol);
     // Mark wall at position (row, col) (sets bit to 1)
     void MarkWall(int row, int col);
     // Clear wall at position (row, col) (sets bit to 0)
@@ -26,5 +26,6 @@ public:
     // Export into a binary format
     void ExportBinary(const char* filename);
     void ReadBinary(const char* filename);
+    void ReadText(const char* filename);
     void Clear();
 };
