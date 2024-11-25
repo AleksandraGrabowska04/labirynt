@@ -70,8 +70,8 @@ public class TileManager {
     public void draw(Graphics2D g2){
         for (int y = 0; y < gridMaxY; y++) {
             for (int x = 0; x < gridMaxX; x++) {
-                g2.drawImage(tile[gridArr[x][y]].image, -labPanel.viewX*labPanel.tileSize + x*labPanel.tileSize,
-                                                        -labPanel.viewY*labPanel.tileSize + y*labPanel.tileSize,
+                g2.drawImage(tile[gridArr[x][y]].image, (-labPanel.viewX + x - gridMaxX/2) * labPanel.tileSize + labPanel.screenWidth/2,
+                                                        (-labPanel.viewY + y - gridMaxY/2) * labPanel.tileSize + labPanel.screenHeight/2,
                                                         labPanel.tileSize, labPanel.tileSize, null);
             };
         };
