@@ -41,12 +41,12 @@ MazeMap::MazeMap(const char* filename)
         std::cerr << "Could not open file: " << filename << std::endl;
         return;
     }
-    int rows = 1;
-    int cols = 0;
+    rows = 1;
+    cols = 0;
     std::string firstLine;
     std::getline(file, firstLine);
     std::stringstream ss(firstLine);
-    while(std::getline(ss, firstLine, ' '))
+    for(char s : firstLine)
     {
         cols++;
     }
@@ -230,19 +230,15 @@ void MazeMap::ReadText(const char* filename)
         std::cerr << "Could not open file: " << filename << std::endl;
         return;
     }
-    std::string cols;
-    std::getline(file, cols);
-    this->cols = std::stoi(cols);
-    this->rows = this->cols;
     std::string line;
     int row = 0;
     while(std::getline(file, line))
     {
         std::stringstream ss(line);
         int col = 0;
-        while(std::getline(ss, line, ' '))
+        for(char s : line)
         {
-            if(line == "1")
+            if(s == '1')
                 MarkWall(row, col);
             col++;
         }
