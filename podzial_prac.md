@@ -9,19 +9,21 @@
 
 ### Krystian Dzikiewicz:
 
-- [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2).
+- [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2, później poprawki).
 - [x] Algorytmy dfs i bfs (tygodnie 3-5).
+- [ ] Testy jednostkowe (integracja z github CI) (tygodnie 6+)
 
 ### Ola Grabowska:
 
 - [x] Algorytm Dijkstry (tygodnie 2-3).
     - [x] ogólna implementacja algorytmu.
     - [x] implementacja na własnej strukturze danych (grafowa).
+    - [ ] wczytywanie do algorytmu labiryntu z pliku ".txt" wygenerowanego przez program generujacy labirynt
 - [ ] Generowanie wykresów (mathplotlib) (tygodnie 4+).
 
 ### Jakub Markowski:
 
-- [ ] Graficzna reprezentacji obieranych ścieżek i labiryntu (Java2D) (tygodnie 1-9).
+- [x] Graficzna reprezentacji obieranych ścieżek i labiryntu (Java2D) (tygodnie 1-9).
     - [x] graficzna reprezentacja labiryntu (tygodnie 1-5).
         - [x] Przykład reprezentowania graficznego labiryntów tzw. "hard-coded" (tygodnie 1-2).
         - [x] Generowanie reprezentacji graficznej labiryntów na podstawie labiryntu zapisanego w postaci tekstowej (pliku ".txt") (tygodnie 3-5).
