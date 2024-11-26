@@ -32,6 +32,39 @@ MazeMap::MazeMap(int rows, int cols, std::initializer_list<std::pair<int,int>> i
     }
 }
 
+MazeMap::MazeMap(const char* filename)
+{
+    std::fstream file;
+    file.open(filename, std::ios::in);
+    if(!file.is_open())
+    {
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return;
+    }
+    int rows = 1;
+    int cols = 0;
+    std::string firstLine;
+    std::getline(file, firstLine);
+    std::stringstream ss(firstLine);
+    while(std::getline(ss, firstLine, ' '))
+    {
+        cols++;
+    }
+    std::string line;
+    while(std::getline(file, line))
+    {
+        rows++;
+    }
+    file.close();
+
+    lab.resize(rows * cols);
+    for(int i = 0; i < rows*cols; i++) 
+    {
+        lab[i] = false;
+    }
+    ReadText(filename);
+}
+
 struct Position {
     int row;
     int col;
@@ -45,25 +78,14 @@ struct Position {
     int idx = graph.AddVertex(row, col); \
     graph.AddEdge(origIdx, idx);
 
-MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
+MazeGraph MazeMap::ToMazeGraph(int startPosRow = 1, int startPosCol = 1)
 {
     std::set<uint64_t> visited; // this is uniquely identifying a position in the maze like a linear array would
+    std::set<std::pair<int, int>> edges;
     std::stack<Position> posStack;
     Position startPos;
     startPos.row = startPosRow;
     startPos.col = startPosCol;
-    // for(int i=0; i<rows; i++)
-    // {
-    //     for(int j=0; j<cols; j++)
-    //     {
-    //         if(!lab[i * cols + j])
-    //         {
-    //             startPos.row = i;
-    //             startPos.col = j;
-    //             break;
-    //         }
-    //     }
-    // }
     MazeGraph graph(0);
     startPos.nodeIdx = graph.AddVertex(startPos.row, startPos.col);
     posStack.push(startPos);
@@ -85,8 +107,18 @@ MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
                 uint64_t vIdx = (row - 1) * cols + col;
                 if(visited.find(vIdx) == visited.end())
                 {
-                    ADD_VERTEX_WITH_EDGE(graph, row - 1, col, currIdx);
-                    available.push_back({row - 1, col, idx});
+                    int idx = graph.AddVertex(row - 1, col);
+                    graph.AddEdge(currIdx, idx);
+                    edges.insert({currIdx, idx});
+                    edges.insert({idx, currIdx});
+                    posStack.push({row - 1, col, idx});
+                }
+                else if(edges.find({currIdx, graph.GetIndexFromCoords(row - 1, col)}) == edges.end())
+                {
+                    graph.AddEdge(currIdx, graph.GetIndexFromCoords(row - 1, col));
+                    // node already visited, find existing vertex index and add edge, don't visit the node again
+                    int idx = graph.GetIndexFromCoords(row - 1, col);
+                    graph.AddEdge(currIdx, idx);
                 }
             }
             if(row < rows - 1 && !Get(row + 1, col)) 
@@ -94,8 +126,17 @@ MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
                 uint64_t vIdx = (row + 1) * cols + col;
                 if(visited.find(vIdx) == visited.end())
                 {
-                    ADD_VERTEX_WITH_EDGE(graph, row + 1, col, currIdx);
-                    available.push_back({row + 1, col, idx});
+                    int idx = graph.AddVertex(row + 1, col);
+                    graph.AddEdge(currIdx, idx);
+                    edges.insert({currIdx, idx});
+                    edges.insert({idx, currIdx});
+                    posStack.push({row + 1, col, idx});
+                }
+                else if(edges.find({currIdx, graph.GetIndexFromCoords(row + 1, col)}) == edges.end())
+                {
+                    // node already visited, find existing vertex index and add edge, don't visit the node again
+                    int idx = graph.GetIndexFromCoords(row + 1, col);
+                    graph.AddEdge(currIdx, idx);
                 }
             }
             if(col > 0 && !Get(row, col - 1)) 
@@ -103,8 +144,17 @@ MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
                 uint64_t vIdx = row * cols + (col - 1);
                 if(visited.find(vIdx) == visited.end())
                 {
-                    ADD_VERTEX_WITH_EDGE(graph, row, col - 1, currIdx);
-                    available.push_back({row, col - 1, idx});
+                    int idx = graph.AddVertex(row, col - 1);
+                    graph.AddEdge(currIdx, idx);
+                    edges.insert({currIdx, idx});
+                    edges.insert({idx, currIdx});
+                    posStack.push({row, col - 1, idx});
+                }
+                else if(edges.find({currIdx, graph.GetIndexFromCoords(row, col - 1)}) == edges.end())
+                {
+                    // node already visited, find existing vertex index and add edge, don't visit the node again
+                    int idx = graph.GetIndexFromCoords(row, col - 1);
+                    graph.AddEdge(currIdx, idx);
                 }
             }
             if(col < cols - 1 && !Get(row, col + 1)) 
@@ -112,15 +162,24 @@ MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
                 uint64_t vIdx = row * cols + (col + 1);
                 if(visited.find(vIdx) == visited.end())
                 {
-                    ADD_VERTEX_WITH_EDGE(graph, row, col + 1, currIdx);
-                    available.push_back({row, col + 1, idx});
+                    int idx = graph.AddVertex(row, col + 1);
+                    graph.AddEdge(currIdx, idx);
+                    edges.insert({currIdx, idx});
+                    edges.insert({idx, currIdx});
+                    posStack.push({row, col + 1, idx});
+                }
+                else if(edges.find({currIdx, graph.GetIndexFromCoords(row, col + 1)}) == edges.end())
+                {
+                    // node already visited, find existing vertex index and add edge, don't visit the node again
+                    int idx = graph.GetIndexFromCoords(row, col + 1);
+                    graph.AddEdge(currIdx, idx);
                 }
             }
 
-            for(auto it = available.begin(); it != available.end(); it++) 
-            {
-                posStack.push(*it);
-            }
+            // for(auto it = available.begin(); it != available.end(); it++) 
+            // {
+            //     posStack.push(*it);
+            // }
         }
     }
     return graph;

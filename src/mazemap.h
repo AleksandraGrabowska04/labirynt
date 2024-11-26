@@ -9,6 +9,7 @@ public:
     // Create labirynth of size rows x cols
     MazeMap(int rows, int cols);
     MazeMap(int rows, int cols, std::initializer_list<std::pair<int, int>> initializerList);
+    MazeMap(const char* filename);
     // Create a graph representation of the labirynth
     MazeGraph ToMazeGraph(int startPosRow, int startPosCol);
     // Mark wall at position (row, col) (sets bit to 1)
