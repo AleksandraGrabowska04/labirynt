@@ -68,124 +68,81 @@ MazeMap::MazeMap(const char* filename)
 struct Position {
     int row;
     int col;
-    int nodeIdx;
     bool operator=(const Position& pos) {
         return row == pos.row && col == pos.col;
     }
 };
 
-#define ADD_VERTEX_WITH_EDGE(graph, row, col, origIdx) \
-    int idx = graph.AddVertex(row, col); \
-    graph.AddEdge(origIdx, idx);
-
 MazeGraph MazeMap::ToMazeGraph(int startPosRow = 1, int startPosCol = 1)
 {
-    std::set<uint64_t> visited; // this is uniquely identifying a position in the maze like a linear array would
+    const std::vector<std::pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
     std::set<std::pair<int, int>> edges;
     std::stack<Position> posStack;
+    std::stack<int> connectingIndexStack;
     Position startPos;
     startPos.row = startPosRow;
     startPos.col = startPosCol;
     MazeGraph graph(0);
-    startPos.nodeIdx = graph.AddVertex(startPos.row, startPos.col);
     posStack.push(startPos);
     
-    while(!posStack.empty()) {
+    while(!posStack.empty()) 
+    {
         Position pos = posStack.top();
         posStack.pop();
-        uint64_t combinedIndex = pos.row * cols + pos.col;
-        // find available positions around this cell
-        if(visited.find(combinedIndex) == visited.end())
+        int currIdx;
+        currIdx = graph.GetIndexFromCoords(pos.row, pos.col);
+        if(currIdx == -1) // can't find an existing index.. add a new vert
+            currIdx = graph.AddVertex(pos.row, pos.col);
+        int prevIdx = -1;
+        if(!connectingIndexStack.empty())
         {
-            visited.insert(combinedIndex);
-            int row = pos.row;
-            int col = pos.col;
-            int currIdx = pos.nodeIdx;
-            std::vector<Position> available;
-            if(row > 0 && !Get(row - 1, col)) 
+            prevIdx = connectingIndexStack.top();
+            connectingIndexStack.pop();
+            if(graph.EdgeExists(prevIdx, currIdx))
             {
-                uint64_t vIdx = (row - 1) * cols + col;
-                if(visited.find(vIdx) == visited.end())
-                {
-                    int idx = graph.AddVertex(row - 1, col);
-                    graph.AddEdge(currIdx, idx);
-                    edges.insert({currIdx, idx});
-                    edges.insert({idx, currIdx});
-                    posStack.push({row - 1, col, idx});
-                }
-                else if(edges.find({currIdx, graph.GetIndexFromCoords(row - 1, col)}) == edges.end())
-                {
-                    graph.AddEdge(currIdx, graph.GetIndexFromCoords(row - 1, col));
-                    // node already visited, find existing vertex index and add edge, don't visit the node again
-                    int idx = graph.GetIndexFromCoords(row - 1, col);
-                    graph.AddEdge(currIdx, idx);
-                }
+                continue;
             }
-            if(row < rows - 1 && !Get(row + 1, col)) 
-            {
-                uint64_t vIdx = (row + 1) * cols + col;
-                if(visited.find(vIdx) == visited.end())
-                {
-                    int idx = graph.AddVertex(row + 1, col);
-                    graph.AddEdge(currIdx, idx);
-                    edges.insert({currIdx, idx});
-                    edges.insert({idx, currIdx});
-                    posStack.push({row + 1, col, idx});
-                }
-                else if(edges.find({currIdx, graph.GetIndexFromCoords(row + 1, col)}) == edges.end())
-                {
-                    // node already visited, find existing vertex index and add edge, don't visit the node again
-                    int idx = graph.GetIndexFromCoords(row + 1, col);
-                    graph.AddEdge(currIdx, idx);
-                }
-            }
-            if(col > 0 && !Get(row, col - 1)) 
-            {
-                uint64_t vIdx = row * cols + (col - 1);
-                if(visited.find(vIdx) == visited.end())
-                {
-                    int idx = graph.AddVertex(row, col - 1);
-                    graph.AddEdge(currIdx, idx);
-                    edges.insert({currIdx, idx});
-                    edges.insert({idx, currIdx});
-                    posStack.push({row, col - 1, idx});
-                }
-                else if(edges.find({currIdx, graph.GetIndexFromCoords(row, col - 1)}) == edges.end())
-                {
-                    // node already visited, find existing vertex index and add edge, don't visit the node again
-                    int idx = graph.GetIndexFromCoords(row, col - 1);
-                    graph.AddEdge(currIdx, idx);
-                }
-            }
-            if(col < cols - 1 && !Get(row, col + 1)) 
-            {
-                uint64_t vIdx = row * cols + (col + 1);
-                if(visited.find(vIdx) == visited.end())
-                {
-                    int idx = graph.AddVertex(row, col + 1);
-                    graph.AddEdge(currIdx, idx);
-                    edges.insert({currIdx, idx});
-                    edges.insert({idx, currIdx});
-                    posStack.push({row, col + 1, idx});
-                }
-                else if(edges.find({currIdx, graph.GetIndexFromCoords(row, col + 1)}) == edges.end())
-                {
-                    // node already visited, find existing vertex index and add edge, don't visit the node again
-                    int idx = graph.GetIndexFromCoords(row, col + 1);
-                    graph.AddEdge(currIdx, idx);
-                }
-            }
-
-            // for(auto it = available.begin(); it != available.end(); it++) 
-            // {
-            //     posStack.push(*it);
-            // }
+            graph.AddEdge(prevIdx, currIdx);
         }
+
+        for(auto dir : directions)
+        {
+            int newRow = pos.row + dir.first;
+            int newCol = pos.col + dir.second;
+            if(newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols)
+                continue;
+            if(Get(newRow, newCol) == true) // if the cell is a wall
+                continue;
+            posStack.push({newRow, newCol});
+            connectingIndexStack.push(currIdx);
+        }
+        
+        // if(pos.row + 1 < rows && !Get(pos.row + 1, pos.col))
+        // {
+        //     posStack.push({pos.row + 1, pos.col});
+        //     connectingIndexStack.push(currIdx);
+        // }
+        // if(pos.row - 1 >= 0 && !Get(pos.row - 1, pos.col))
+        // {
+        //     posStack.push({pos.row - 1, pos.col});
+        //     connectingIndexStack.push(currIdx);
+        // }
+
+        // if(pos.col + 1 < cols && !Get(pos.row, pos.col + 1))
+        // {
+        //     posStack.push({pos.row, pos.col + 1});
+        //     connectingIndexStack.push(currIdx);
+        // }
+        // if(pos.col - 1 >= 0 && !Get(pos.row, pos.col - 1))
+        // {
+        //     posStack.push({pos.row, pos.col - 1});
+        //     connectingIndexStack.push(currIdx);
+        // }
     }
     return graph;
 }
 
-void MazeMap::MarkWall(int row, int col) 
+void MazeMap::MarkWall(int row, int col)
 {
     lab[row * cols + col] = true;
 }
