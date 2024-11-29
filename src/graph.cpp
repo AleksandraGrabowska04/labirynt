@@ -38,7 +38,7 @@ void MazeGraph::Print()
     for(int i = 0; i < numV; i++)
     {
         auto data = indexedNodeData[i];
-        std::cout << "Vertex " << i << "(x: " << data->y << " y: " << data->x << ") is connected to: ";
+        std::cout << "Vertex " << i << "(x: " << data->x << " y: " << data->y << ") is connected to: ";
         for(auto it = adj[i]->begin(); it != adj[i]->end(); it++)
         {
             std::cout << *it << " ";
@@ -73,4 +73,31 @@ std::vector<int> MazeGraph::GetAdjacentNodeIndicies(int v)
         connectedNodes.push_back(*it);
     }
     return connectedNodes;
+}
+std::shared_ptr<MazeGraphNode> MazeGraph::GetGraphNode(int v)
+{
+    if(v >= numV || v < 0)
+    {
+        throw std::invalid_argument("Vertex index out of bounds");
+    }
+    return indexedNodeData[v];
+}
+int MazeGraph::GetIndexFromCoords(int x, int y)
+{
+    for(int i = 0; i < numV; i++)
+    {
+        auto node = indexedNodeData[i];
+        if(node->x == x && node->y == y)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+bool MazeGraph::EdgeExists(int v, int w)
+{
+    if(v >= numV || w >= numV || v < 0 || w < 0)
+        throw std::invalid_argument("Vertex index out of bounds");
+    auto adjSet = adj.at(v);
+    return adjSet->find(w) != adjSet->end();
 }

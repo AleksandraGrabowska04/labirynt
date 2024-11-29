@@ -22,4 +22,8 @@ public:
     std::set<std::shared_ptr<MazeGraphNode>> GetAdjacentNodes(int v);
     // Get the adjacent nodes of a vertex, as a vector of raw indices
     std::vector<int> GetAdjacentNodeIndicies(int v);
+    std::shared_ptr<MazeGraphNode> GetGraphNode(int v);
+    int GetIndexFromCoords(int x, int y);
+    // order doesn't matter
+    bool EdgeExists(int v, int w);
 };
