@@ -2,28 +2,29 @@
 
 ### Jakub Malinowski (przewodniczący):
 
-- [ ] Proceduralne generowanie labiryntu w postaci wstępnej (numerycznej/macierzowej) (w C) (tygodnie 1-5):
+- [x] Proceduralne generowanie labiryntu w postaci wstępnej (numerycznej/macierzowej) (w C) (tygodnie 1-5):
     - [x] Algorytm generacji labiryntu (tygodnie 1-3).
-    - [ ] Zamiana labiryntu w postaci danych/postaci numerycznej na plik tekstowy (plik ".txt") (tygodnie 4-5).
+    - [x] Zamiana labiryntu w postaci danych/postaci numerycznej na plik tekstowy (plik ".txt") (tygodnie 4-5).
 - [ ] Algorytm A* (A gwiazdka) (w C) (tygodnie 6-8).
 
 ### Krystian Dzikiewicz:
 
-- [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2).
+- [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2, później poprawki).
 - [x] Algorytmy dfs i bfs (tygodnie 3-5).
-- [ ] Przygotowanie systemu testów jednostkówych + integracja GitHub CI (tydzień 6)
+- [ ] Testy jednostkowe (integracja z github CI) (tygodnie 6+)
 
 ### Ola Grabowska:
 
-- [ ] Algorytm Dijkstry (tygodnie 2-3).
+- [x] Algorytm Dijkstry (tygodnie 2-3).
     - [x] ogólna implementacja algorytmu.
-    - [ ] implementacja na własnej strukturze danych (grafowa).
+    - [x] implementacja na własnej strukturze danych (grafowa).
+    - [ ] wczytywanie do algorytmu labiryntu z pliku ".txt" wygenerowanego przez program generujacy labirynt
 - [ ] Generowanie wykresów (mathplotlib) (tygodnie 4+).
 
 ### Jakub Markowski:
 
-- [ ] Graficzna reprezentacji obieranych ścieżek i labiryntu (Java2D) (tygodnie 1-9).
-    - [ ] graficzna reprezentacja labiryntu (tygodnie 1-5).
+- [x] Graficzna reprezentacji obieranych ścieżek i labiryntu (Java2D) (tygodnie 1-9).
+    - [x] graficzna reprezentacja labiryntu (tygodnie 1-5).
         - [x] Przykład reprezentowania graficznego labiryntów tzw. "hard-coded" (tygodnie 1-2).
         - [x] Generowanie reprezentacji graficznej labiryntów na podstawie labiryntu zapisanego w postaci tekstowej (pliku ".txt") (tygodnie 3-5).
     - [ ] graficzna reprezentacja/animacja ścieżek (tygodnie 5-9). \

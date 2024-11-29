@@ -2,3 +2,5 @@ build
 .vscode
 .xmake
 *.exe
+*.out
+src/maze.txt
