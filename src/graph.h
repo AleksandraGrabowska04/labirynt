@@ -24,4 +24,6 @@ public:
     std::vector<int> GetAdjacentNodeIndicies(int v);
     std::shared_ptr<MazeGraphNode> GetGraphNode(int v);
     int GetIndexFromCoords(int x, int y);
+    // order doesn't matter
+    bool EdgeExists(int v, int w);
 };

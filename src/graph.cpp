@@ -94,3 +94,10 @@ int MazeGraph::GetIndexFromCoords(int x, int y)
     }
     return -1;
 }
+bool MazeGraph::EdgeExists(int v, int w)
+{
+    if(v >= numV || w >= numV || v < 0 || w < 0)
+        throw std::invalid_argument("Vertex index out of bounds");
+    auto adjSet = adj.at(v);
+    return adjSet->find(w) != adjSet->end();
+}
