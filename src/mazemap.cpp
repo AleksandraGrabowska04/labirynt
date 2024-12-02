@@ -116,28 +116,6 @@ MazeGraph MazeMap::ToMazeGraph(int startPosRow = 1, int startPosCol = 1)
             posStack.push({newRow, newCol});
             connectingIndexStack.push(currIdx);
         }
-        
-        // if(pos.row + 1 < rows && !Get(pos.row + 1, pos.col))
-        // {
-        //     posStack.push({pos.row + 1, pos.col});
-        //     connectingIndexStack.push(currIdx);
-        // }
-        // if(pos.row - 1 >= 0 && !Get(pos.row - 1, pos.col))
-        // {
-        //     posStack.push({pos.row - 1, pos.col});
-        //     connectingIndexStack.push(currIdx);
-        // }
-
-        // if(pos.col + 1 < cols && !Get(pos.row, pos.col + 1))
-        // {
-        //     posStack.push({pos.row, pos.col + 1});
-        //     connectingIndexStack.push(currIdx);
-        // }
-        // if(pos.col - 1 >= 0 && !Get(pos.row, pos.col - 1))
-        // {
-        //     posStack.push({pos.row, pos.col - 1});
-        //     connectingIndexStack.push(currIdx);
-        // }
     }
     return graph;
 }
