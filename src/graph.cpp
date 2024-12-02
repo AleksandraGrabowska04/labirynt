@@ -81,7 +81,6 @@ std::shared_ptr<MazeGraphNode> MazeGraph::GetGraphNode(int v)
     }
     return indexedNodeData[v];
 }
-
 int MazeGraph::GetIndexFromCoords(int x, int y)
 {
     for(int i = 0; i < numV; i++)
