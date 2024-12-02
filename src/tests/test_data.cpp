@@ -53,11 +53,11 @@ TEST(MazeGraphTest, AddEdge)
     EXPECT_EQ(adj[0], idx2);
 }
 
-TEST(MazeGraphTest, GetVertexFromCoordinates)
+TEST(MazeGraphTest, GetVertexFromCoords)
 {
     MazeGraph graph(0);
     int idx1 = graph.AddVertex(1, 2);
-    ASSERT_EQ(graph.GetIndexFromCoordinates(1, 2), idx1);
+    ASSERT_EQ(graph.GetIndexFromCoords(1, 2), idx1);
 }
 
 TEST(MazeGraphTest, MapToGraph)
@@ -66,8 +66,8 @@ TEST(MazeGraphTest, MapToGraph)
     MazeGraph graph = lab.ToMazeGraph();
 
     // (1, 1) should be connected to (0, 1), (1, 0) and (2, 1)
-    auto adj2 = graph.GetAdjacentNodeIndicies(graph.GetIndexFromCoordinates(1, 1));
-    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoordinates(1, 0)));
-    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoordinates(0, 1)));
-    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoordinates(1, 2)));
+    auto adj2 = graph.GetAdjacentNodeIndicies(graph.GetIndexFromCoords(1, 1));
+    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoords(1, 0)));
+    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoords(0, 1)));
+    ASSERT_TRUE(VEC_CONTAINS(adj2, graph.GetIndexFromCoords(1, 2)));
 }

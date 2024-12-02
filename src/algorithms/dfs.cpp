@@ -8,8 +8,9 @@ std::vector<int> Algorithms::dfs(MazeGraph& mazeGraph, int startNode, int endNod
 {
     std::set<int> visited;
     std::stack<int> graphStack;
+    // this stack will save each new path taken in the graph as a vector
+    // when we get to the end we can return the path from the top of the stack
     std::stack<std::vector<int>> pathStack;
-    //std::vector<int> bestPath;
     graphStack.push(startNode);
     pathStack.push(std::vector<int>{startNode});
     while(!graphStack.empty())

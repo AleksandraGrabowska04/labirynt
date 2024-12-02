@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cstdint>
 #include <stack>
+#include <string>
+#include <sstream>
 #include <initializer_list>
 #include "mazemap.h"
 #include "graph.h"
@@ -30,99 +32,95 @@ MazeMap::MazeMap(int rows, int cols, std::initializer_list<std::pair<int,int>> i
     }
 }
 
+MazeMap::MazeMap(const char* filename)
+{
+    std::fstream file;
+    file.open(filename, std::ios::in);
+    if(!file.is_open())
+    {
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return;
+    }
+    rows = 1;
+    cols = 0;
+    std::string firstLine;
+    std::getline(file, firstLine);
+    std::stringstream ss(firstLine);
+    for(char s : firstLine)
+    {
+        cols++;
+    }
+    std::string line;
+    while(std::getline(file, line))
+    {
+        rows++;
+    }
+    file.close();
+
+    lab.resize(rows * cols);
+    for(int i = 0; i < rows*cols; i++) 
+    {
+        lab[i] = false;
+    }
+    ReadText(filename);
+}
+
 struct Position {
     int row;
     int col;
-    int nodeIdx;
     bool operator=(const Position& pos) {
         return row == pos.row && col == pos.col;
     }
 };
 
-#define ADD_VERTEX_WITH_EDGE(graph, row, col, origIdx) \
-    int idx = graph.AddVertex(row, col); \
-    graph.AddEdge(origIdx, idx);
-
-MazeGraph MazeMap::ToMazeGraph()
+MazeGraph MazeMap::ToMazeGraph(int startPosRow, int startPosCol)
 {
-    std::set<uint64_t> visited; // this is uniquely identifying a position in the maze like a linear array would
+    const std::vector<std::pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    std::set<std::pair<int, int>> edges;
     std::stack<Position> posStack;
+    std::stack<int> connectingIndexStack;
     Position startPos;
-    for(int i=0; i<rows; i++)
-    {
-        for(int j=0; j<cols; j++)
-        {
-            if(!lab[i * cols + j])
-            {
-                startPos.row = i;
-                startPos.col = j;
-                break;
-            }
-        }
-    }
+    startPos.row = startPosRow;
+    startPos.col = startPosCol;
     MazeGraph graph(0);
-    startPos.nodeIdx = graph.AddVertex(startPos.row, startPos.col);
     posStack.push(startPos);
     
-    while(!posStack.empty()) {
+    while(!posStack.empty()) 
+    {
         Position pos = posStack.top();
         posStack.pop();
-        uint64_t combinedIndex = pos.row * cols + pos.col;
-        // find available positions around this cell
-        if(visited.find(combinedIndex) == visited.end())
+        int currIdx;
+        currIdx = graph.GetIndexFromCoords(pos.row, pos.col);
+        if(currIdx == -1) // can't find an existing index.. add a new vert
+            currIdx = graph.AddVertex(pos.row, pos.col);
+        int prevIdx = -1;
+        if(!connectingIndexStack.empty())
         {
-            visited.insert(combinedIndex);
-            int row = pos.row;
-            int col = pos.col;
-            int currIdx = pos.nodeIdx;
-            std::vector<Position> available;
-            if(row > 0 && !Get(row - 1, col)) 
+            prevIdx = connectingIndexStack.top();
+            connectingIndexStack.pop();
+            if(graph.EdgeExists(prevIdx, currIdx))
             {
-                uint64_t vIdx = (row - 1) * cols + col;
-                if(visited.find(vIdx) == visited.end())
-                {
-                    ADD_VERTEX_WITH_EDGE(graph, row - 1, col, currIdx);
-                    available.push_back({row - 1, col, idx});
-                }
+                continue;
             }
-            if(row < rows - 1 && !Get(row + 1, col)) 
-            {
-                uint64_t vIdx = (row + 1) * cols + col;
-                if(visited.find(vIdx) == visited.end())
-                {
-                    ADD_VERTEX_WITH_EDGE(graph, row + 1, col, currIdx);
-                    available.push_back({row + 1, col, idx});
-                }
-            }
-            if(col > 0 && !Get(row, col - 1)) 
-            {
-                uint64_t vIdx = row * cols + (col - 1);
-                if(visited.find(vIdx) == visited.end())
-                {
-                    ADD_VERTEX_WITH_EDGE(graph, row, col - 1, currIdx);
-                    available.push_back({row, col - 1, idx});
-                }
-            }
-            if(col < cols - 1 && !Get(row, col + 1)) 
-            {
-                uint64_t vIdx = row * cols + (col + 1);
-                if(visited.find(vIdx) == visited.end())
-                {
-                    ADD_VERTEX_WITH_EDGE(graph, row, col + 1, currIdx);
-                    available.push_back({row, col + 1, idx});
-                }
-            }
+            graph.AddEdge(prevIdx, currIdx);
+        }
 
-            for(auto it = available.begin(); it != available.end(); it++) 
-            {
-                posStack.push(*it);
-            }
+        for(auto dir : directions)
+        {
+            int newRow = pos.row + dir.first;
+            int newCol = pos.col + dir.second;
+            if(newRow < 0 || newRow >= rows || newCol < 0 || newCol >= cols)
+                continue;
+            if(Get(newRow, newCol) == true) // if the cell is a wall
+                continue;
+            posStack.push({newRow, newCol});
+            connectingIndexStack.push(currIdx);
         }
     }
     return graph;
 }
 
-void MazeMap::MarkWall(int row, int col) 
+void MazeMap::MarkWall(int row, int col)
 {
     lab[row * cols + col] = true;
 }
@@ -156,6 +154,32 @@ void MazeMap::ExportText(const char* filename)
         }
         file << std::endl;
     }
+}
+
+void MazeMap::ReadText(const char* filename)
+{
+    std::fstream file;
+    file.open(filename, std::ios::in);
+    if(!file.is_open())
+    {
+        std::cerr << "Could not open file: " << filename << std::endl;
+        return;
+    }
+    std::string line;
+    int row = 0;
+    while(std::getline(file, line))
+    {
+        std::stringstream ss(line);
+        int col = 0;
+        for(char s : line)
+        {
+            if(s == '1')
+                MarkWall(row, col);
+            col++;
+        }
+        row++;
+    }
+    file.close();
 }
 
 void MazeMap::ExportBinary(const char* filename) 
