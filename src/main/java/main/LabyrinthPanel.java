@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import path.PathManager;
 import tile.TileManager;
 
 public class LabyrinthPanel extends JPanel implements Runnable{
@@ -14,11 +15,13 @@ public class LabyrinthPanel extends JPanel implements Runnable{
     KeyHandler keyH = new KeyHandler();
     Thread labThread;
     TileManager tileMng = new TileManager(this);
+    PathManager pathMng = new PathManager(this, tileMng);
 
     final public int originalTileSize = 16;
     final int FPS = 30;
     final public int gridLimitX = 1000;
     final public int gridLimitY = 1000;
+    final public int pathLimit = 1000000;
 
     public int screenWidth = 800;
     public int screenHeight = 800;
@@ -83,11 +86,11 @@ public class LabyrinthPanel extends JPanel implements Runnable{
         }
         if(keyH.inputPlus == true){
             tileSize += 1;
-
         }
         if(keyH.inputMinus == true && tileSize > 1){
             tileSize -= 1;
         }
+        pathMng.update(keyH);
     }
 
     @Override
@@ -97,5 +100,6 @@ public class LabyrinthPanel extends JPanel implements Runnable{
         Graphics2D g2 = (Graphics2D) g;
 
         tileMng.draw(g2);
+        pathMng.draw(g2);
     }
 }

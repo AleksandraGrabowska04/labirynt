@@ -15,8 +15,8 @@ public class TileManager {
     Tile[] tile;
 
     int[][] gridArr;
-    int gridMaxX;
-    int gridMaxY;
+    public int gridMaxX;
+    public int gridMaxY;
 
     public TileManager(LabyrinthPanel labPanel){
         this.labPanel = labPanel;
