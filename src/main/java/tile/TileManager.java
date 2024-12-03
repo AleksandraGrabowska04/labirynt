@@ -33,9 +33,9 @@ public class TileManager {
     public void getTileImage() {
         try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/black.png"));
+            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/white.png"));
+            tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/black.png"));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,13 +44,13 @@ public class TileManager {
 
     public void loadLabyrinth(){
         try {
-            InputStream gridStream = getClass().getResourceAsStream("/grid.txt");
+            InputStream gridStream = getClass().getResourceAsStream("/grid2.txt");
             BufferedReader gridReader = new BufferedReader(new InputStreamReader(gridStream));
             int rowCounter = 0;
             String xLine;
             while ((xLine = gridReader.readLine()) != null && rowCounter < labPanel.gridLimitY) {
                 int colCounter = 0;
-                String[] xSquares = xLine.split(" ");
+                String[] xSquares = xLine.split("");
                 for(int i = 0; i < xSquares.length && i < labPanel.gridLimitX; i++) {
                     this.gridArr[i][rowCounter] = Integer.parseInt(xSquares[i]);
                     colCounter++;

@@ -1,4 +1,4 @@
-package labirynt.src.main.java.main;
+package main;
 
 import java.awt.image.BufferedImage;
 
