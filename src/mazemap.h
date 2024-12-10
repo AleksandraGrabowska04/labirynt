@@ -3,7 +3,7 @@
 #include "graph.h"
 
 #define NUMBER_OF_ROWS rows
-#define NUMBER_OF_COLUMS columns
+#define NUMBER_OF_COLUMNS cols
 
 class MazeMap {
     std::vector<bool> lab;
@@ -33,6 +33,6 @@ public:
     void ReadBinary(const char* filename);
     void ReadText(const char* filename);
     int GetMazeHeight() { return NUMBER_OF_ROWS; }
-    int GetMazeWidth() { return NUMBER_OF_COLUMS; }
+    int GetMazeWidth() { return NUMBER_OF_COLUMNS; }
     void Clear();
 };
