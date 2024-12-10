@@ -28,5 +28,7 @@ public:
     void ExportBinary(const char* filename);
     void ReadBinary(const char* filename);
     void ReadText(const char* filename);
+    int GetRows() { return rows; }
+    int GetCols() { return cols; }
     void Clear();
 };
