@@ -23,3 +23,20 @@ bool WriteGraphNodesToFile(const char* filename, std::vector<std::shared_ptr<Maz
     file.close();
     return true;
 }
+
+bool WriteGraphNodesToTextFile(const char* filename , std::vector<std::shared_ptr<MazeGraphNode>> nodes)
+{
+    std::fstream file;
+    file.open(filename, std::ios::out);
+    if(file.good() == false)
+        return false;
+
+    for(const auto &node : nodes)
+    {
+        if(!node)
+            continue;
+        file << node->x << " " << node->y << std::endl;
+    }
+    file.close();
+    return true;
+}

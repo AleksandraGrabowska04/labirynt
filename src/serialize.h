@@ -9,3 +9,4 @@
 //   - 4 bytes: y coordinate
 // Returns true if the operation was successful, false otherwise
 bool WriteGraphNodesToFile(const char* filename, std::vector<std::shared_ptr<MazeGraphNode>> nodes);
+bool WriteGraphNodesToTextFile(const char* filename , std::vector<std::shared_ptr<MazeGraphNode>> nodes);
