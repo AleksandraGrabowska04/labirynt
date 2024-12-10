@@ -1,6 +1,10 @@
 #pragma once
 #include <vector>
 #include "graph.h"
+
+#define NUMBER_OF_ROWS rows
+#define NUMBER_OF_COLUMNS cols
+
 class MazeMap {
     std::vector<bool> lab;
     int rows, cols;
@@ -28,7 +32,7 @@ public:
     void ExportBinary(const char* filename);
     void ReadBinary(const char* filename);
     void ReadText(const char* filename);
-    int GetRows() { return rows; }
-    int GetCols() { return cols; }
+    int GetMazeHeight() { return NUMBER_OF_ROWS; }
+    int GetMazeWidth() { return NUMBER_OF_COLUMNS; }
     void Clear();
 };
