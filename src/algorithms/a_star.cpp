@@ -2,8 +2,8 @@
 #include <vector>
 #include <set>
 #include <map>
-#include "mazemap.h"
-#include "graph.h"
+#include "../mazemap.h"
+#include "../graph.h"
 
 //change 0 to STARTING_NODE later?
 
