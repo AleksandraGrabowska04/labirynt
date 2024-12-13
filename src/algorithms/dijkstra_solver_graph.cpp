@@ -1,140 +1,110 @@
-#include <iostream>
 #include <vector>
 #include <queue>
-#include <unordered_map>
-#include <utility>
+#include <set>
+#include <iostream>
+#include <../graph.h>
+#include <../mazemap.h>
+#include <map>
 #include <climits>
-#include <algorithm> // Needed for std::reverse
-#include "labirynthdata.h"
+#include <bits/algorithmfwd.h>
 
-// Graph structure storing neighbors for each cell in the labyrinth
-using Graph = std::unordered_map<int, std::vector<int>>;
+std::vector<int> dijkstra(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder) {
+    std::set<int> visited;  // Zbiór odwiedzonych węzłów
+    std::map<int, int> dist;  // Najkrótsze dystanse
+    std::map<int, int> prev;  // Poprzedniki węzłów
 
-// Converts the labyrinth into a graph (nodes and edges between cells)
-Graph buildGraph(const Labirynth& labirynth) {
-    int rows = labirynth.getRows();
-    int cols = labirynth.getCols();
-    Graph graph;
-
-    // Direction vectors for moving up, down, left, right
-    const int dx[] = {-1, 1, 0, 0};
-    const int dy[] = {0, 0, -1, 1};
-
-    // Iterate over each cell in the labyrinth
-    for (int x = 0; x < rows; ++x) {
-        for (int y = 0; y < cols; ++y) {
-            // Only proceed if the current cell is not a wall
-            if (!labirynth.isWall(x, y)) {
-                int node = x * cols + y; // Index in the graph
-
-                // Check four possible neighboring cells (up, down, left, right)
-                for (int i = 0; i < 4; ++i) {
-                    int nx = x + dx[i];
-                    int ny = y + dy[i];
-
-                    // Add valid neighbors that are within bounds and are not walls
-                    if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && !labirynth.isWall(nx, ny)) {
-                        int neighbor = nx * cols + ny;
-                        graph[node].push_back(neighbor);
-                    }
-                }
-            }
-        }
+    // Inicjalizacja dystansów
+    for (int i = 0; i <= startNode; ++i) {
+        dist[i] = INT_MAX;
     }
-    return graph;
-}
+    dist[startNode] = 0;
 
-// Solves the labyrinth using Dijkstra's algorithm with the graph structure
-std::vector<std::pair<int, int>> solveMazeDijkstraGraph(Labirynth& labirynth) {
-    int rows = labirynth.getRows();
-    int cols = labirynth.getCols();
-    int start = 0;             // Starting node (top-left corner)
-    int end = rows * cols - 1; // Ending node (bottom-right corner)
+    // Kolejka priorytetowa do przetwarzania węzłów
+    using Node = std::pair<int, int>;  // (dystans, węzeł)
+    std::priority_queue<Node, std::vector<Node>, std::greater<>> pq;
+    pq.push({0, startNode});
 
-    // Build the labyrinth's graph representation
-    Graph graph = buildGraph(labirynth);
-
-    // Initialize distance and predecessor vectors
-    std::vector<int> dist(rows * cols, INT_MAX); // Distance to each node, initially set to infinity
-    dist[start] = 0;
-    std::vector<int> prev(rows * cols, -1); // To keep track of path predecessors
-
-    // Priority queue for processing nodes by shortest distance
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> pq;
-    pq.push({0, start}); // Start with the initial node with distance 0
-
-    // Dijkstra's algorithm on the graph
     while (!pq.empty()) {
-        auto [d, node] = pq.top();
+        auto [currentDist, currentNode] = pq.top();
         pq.pop();
 
-        // If we reached the target node, break out of the loop
-        if (node == end) break;
+        // Sprawdź, czy węzeł został już odwiedzony
+        if (visited.find(currentNode) != visited.end()) {
+            continue;
+        }
 
-        // Traverse each neighbor of the current node
-        for (int neighbor : graph[node]) {
-            int new_dist = d + 1; // Edge cost between nodes (always 1 for adjacent cells)
+        visited.insert(currentNode);
+        visitOrder.push_back(currentNode);  // Dodaj do odwiedzonych węzłów
 
-            // If a shorter path to neighbor is found, update the distance and push to queue
-            if (new_dist < dist[neighbor]) {
-                dist[neighbor] = new_dist;
-                prev[neighbor] = node; // Store the predecessor for path reconstruction
-                pq.push({new_dist, neighbor});
+        // Przerwij, jeśli dotarliśmy do końca
+        if (currentNode == endNode) {
+            break;
+        }
+
+        // Przetwarzanie sąsiadów
+        for (int neighbor : graph.GetAdjacentNodeIndicies(currentNode)) {
+            if (visited.find(neighbor) != visited.end()) {
+                continue;
+            }
+
+        // Sprawdź, czy nowa ścieżka do sąsiada jest krótsza; jeśli tak, zaktualizuj dystans i dodaj do kolejki
+            int newDist = dist[currentNode] + 1;  // Waga krawędzi = 1
+            if (newDist < dist[neighbor]) {
+                dist[neighbor] = newDist;
+                prev[neighbor] = currentNode;
+                pq.push({newDist, neighbor});
             }
         }
     }
 
-    // Reconstruct the path from the end node to the start using predecessors
-    std::vector<std::pair<int, int>> path;
-    for (int at = end; at != -1; at = prev[at]) {
-        path.push_back({at / cols, at % cols}); // Convert linear index to 2D coordinates
+    // Rekonstrukcja ścieżki
+    std::vector<int> path;
+    for (int at = endNode; at != 0; at = prev[at]) {
+        path.push_back(at);
     }
+    std::reverse(path.begin(), path.end());
 
-    std::reverse(path.begin(), path.end()); // Reverse the path to start from the beginning
-
-    // If the first cell in the path is not the start, it means no valid path was found
-    if (path.front() != std::make_pair(0, 0)) {
-        path.clear(); // Clear the path if it doesn't start at the entry
-    }
-
-    return path;
-}
-
-// Function to print the path
-void printPath(const std::vector<std::pair<int, int>>& path) {
-    if (path.empty()) {
-        std::cout << "No available path.\n";
-    } else {
-        std::cout << "Path:\n";
-        for (const auto& [x, y] : path) {
-            std::cout << "(" << x << ", " << y << ") -> ";
-        }
-        std::cout << "End\n";
-    }
+    return path.front() == startNode ? path : std::vector<int>{};
 }
 
 int main() {
-    // Create a sample labyrinth with dimensions 5x6
-    Labirynth labirynth(5, 6);
+    // Tworzenie mapy labiryntu (na razie z ręcznym wypisaniem ścian)
+   MazeMap maze(10, 10, {
+        {0, 1}, {0, 3}, {0, 5}, {0, 7}, {0, 9},
+        {1, 1}, {1, 3}, {1, 5}, {1, 7}, {1, 9},
+        {2, 1}, {2, 3}, {2, 5}, {2, 7}, {2, 9},
+        {3, 3}, {3, 5}, {3, 7},
+        {4, 1}, {4, 3}, {4, 5}, {4, 7}, {4, 9},
+        {5, 3}, {5, 5}, {5, 7},
+        {6, 1}, {6, 3}, {6, 5}, {6, 7}, {6, 9},
+        {7, 1}, {7, 3}, {7, 5}, {7, 7}, {7, 9},
+        {8, 1}, {8, 3}, {8, 5}, {8, 7}, {8, 9},
+        {9, 1}, {9, 3}, {9, 5}, {9, 7}, {9, 9}
+    });
+    maze.Print();
 
-    // Mark specific cells as walls
-    labirynth.MarkWall(0, 1);
-    labirynth.MarkWall(1, 1);
-    labirynth.MarkWall(1, 3);
-    labirynth.MarkWall(1, 4);
-    labirynth.MarkWall(1, 5);
-    labirynth.MarkWall(3, 0);
-    labirynth.MarkWall(3, 2);
-    labirynth.MarkWall(3, 3);
+    // Tworzenie grafu na podstawie mapy
+    MazeGraph graph = maze.ToMazeGraph(1, 1);  // Start grafu od punktu (1, 1)
 
-    std::cout << "Labyrinth:\n";
-    labirynth.Print();
+    // Węzły startowy i końcowy
+    int startNode = graph.GetIndexFromCoords(1, 1);
+    int endNode = graph.GetIndexFromCoords(8, 8);
 
-    // Run Dijkstra's algorithm to find the shortest path
-    std::vector<std::pair<int, int>> path = solveMazeDijkstraGraph(labirynth);
+    // Algorytm Dijkstry
+    std::vector<int> visitOrder; // Wektor przechowujący kolejność odwiedzanych węzłów podczas działania algorytmu
+    std::vector<int> path = dijkstra(graph, startNode, endNode, visitOrder);
 
-    // Display the resulting path
-    printPath(path);
+    // Wyświetlenie wyników
+    if (path.empty()) {
+        std::cout << "Brak dostępnej ścieżki.\n";
+    } else {
+        std::cout << "Ścieżka: ";
+        for (int node : path) {
+            auto coords = graph.GetGraphNode(node);  // Współrzędne węzła
+            std::cout << "(" << coords->x << ", " << coords->y << ") -> ";
+        }
+        std::cout << "Koniec\n";
+    }
 
     return 0;
 }
