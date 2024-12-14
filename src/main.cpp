@@ -58,6 +58,10 @@ int main(int argc, char* argv[])
         history.push_back(mazeGraph.GetGraphNode(node));
     }
 
+    //WriteGraphNodesToFile("output/bfs_path.bin", nodes);
+    WriteGraphNodesToTextFile("output/bfs_path.txt", nodes);
+    WriteGraphNodesToTextFile("output/bfs_visit_order.txt", history);
+
     // Dijkstra
 
 /*
@@ -109,8 +113,10 @@ int main(int argc, char* argv[])
     }
     std::cout << std::endl;
 */
-    //WriteGraphNodesToFile("output/bfs_path.bin", nodes);
-    WriteGraphNodesToTextFile("output/bfs_path.txt", nodes);
-    WriteGraphNodesToTextFile("output/bfs_visit_order.txt", history);
+
+    // Save Dijkstra path and visit order to text files
+    WriteGraphNodesToTextFile("output/dijkstra_path.txt", nodes);
+    WriteGraphNodesToTextFile("output/dijkstra_visit_order.txt", history);
+
     return 0;
 }
