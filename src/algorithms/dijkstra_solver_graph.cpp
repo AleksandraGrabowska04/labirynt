@@ -8,6 +8,7 @@
 #include <map>
 #include <climits>
 #include <bits/algorithmfwd.h>
+#include <algorithm>
 
 std::vector<int> Algorithms::dijkstra(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder) {
     std::set<int> visited;               // Set of visited nodes

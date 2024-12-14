@@ -6,6 +6,8 @@
 #include <climits>
 #include "../mazemap.h"
 #include "../graph.h"
+#include "algorithms.h"
+
 
 //change 0 to STARTING_NODE later?
 
@@ -24,29 +26,29 @@ int lowest_f_score(std::map<int, int>& f_score, std::set<int>& discovered_nodes)
     return lowest_score_node;
 }
 
-void reconstruct_path(std::map<int, int>& came_from, int goal_node_index, MazeGraph& grph){
+void reconstruct_path(std::map<int, int>& came_from, int goal_node_index, MazeGraph& graph){
 
     std::vector<MazeGraphNode> path;
-    path.push_back(*grph.GetGraphNode(goal_node_index));
+    path.push_back(*graph.GetGraphNode(goal_node_index));
     int current_node = goal_node_index; //a currently checked node index.
 
     while(came_from[current_node] != -1){
 
         current_node = came_from[current_node]; //assigns index of node from the previous step of "the cheapest" path into the current_node.
-        path.push_back(*grph.GetGraphNode(current_node)); //adds index of the current node to the end of the path vector.
+        path.push_back(*graph.GetGraphNode(current_node)); //adds index of the current node to the end of the path vector.
 
     }
 
-    for(int i = path.size()-1; i > -1; i--){
+    /*for(int i = path.size()-1; i > -1; i--){
         std::cout << path[i].x << ' ' << path[i].y << '\n';
-    }
+    }*/
 }
 
-int heuristic_estimation(int x, MazeGraph& grph, MazeMap& lab){ //heuristic estimation of distance from x node to the goal node.
+int heuristic_estimation(int x, MazeGraph& graph, MazeMap& lab){ //heuristic estimation of distance from x node to the goal node.
 
     int heuristic_distance = //heuristically estimated distance.
-    (lab.GetMazeHeight() - 2) - grph.GetGraphNode(x)->x
-    + (lab.GetMazeWidth() - 2) - grph.GetGraphNode(x)->y;
+    (lab.GetMazeHeight() - 2) - graph.GetGraphNode(x)->x
+    + (lab.GetMazeWidth() - 2) - graph.GetGraphNode(x)->y;
 
     return heuristic_distance;
 
@@ -57,12 +59,13 @@ int heuristic_estimation(int x, MazeGraph& grph, MazeMap& lab){ //heuristic esti
     //c. write method for it (like: getGoalNode) inside "graph.cpp" (The MazeGraph's class/data structure file) or some similar solution.
 }
 
-int main(){
+void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder){
 
-    MazeMap lab("../maze.txt"); //Labyrinth's map (and data structure containing it).
-    MazeGraph grph = lab.ToMazeGraph(); //graph representation of the map.
-    grph.Print();
+    //MazeMap lab("../maze.txt"); //Labyrinth's map (and data structure containing it).
+    //MazeGraph graph = lab.ToMazeGraph(); //graph representation of the map.
+    //graph.Print();
     
+    //visitOrder or nodeVisitOrder //used for the main.cpp part of the program (used to return path of indexes of visited nodes).
     std::set<int> discovered_nodes; //indicies of discovered (and currently or soon-to-be checked) maze nodes. (in some documentations named as: openset).
     std::set<int> completed_nodes; //indicies of nodes which have been checked throughtfully (in every way we can go from that node). (in some documentations named as: closedset).
     std::set<int> adjacent_nodes; //indicies of adjacent maze nodes (nodes neighbouring to the currently checked node).
@@ -73,11 +76,11 @@ int main(){
     //first value is node index, second value is g_score (g(x)).
     g_score[0] = 0; //g_score (distance) for 0 (starting point) is 0 (which is logical).
     std::map<int, int> h_score; //describe this later (heuristics score (h(x))).
-    h_score[0] = heuristic_estimation(0, grph, lab); //check later again
+    h_score[0] = heuristic_estimation(0, graph, lab); //check later again
     std::map<int, int> f_score; //f(x) = g(x) + h(x) (f_score = g_score + h_score).
     f_score[0] = g_score[0] + h_score[0];
     //                                      AMOUNT_OF_ROWS        AMOUNT_OF_COLUMNS
-    int goal_node = grph.GetIndexFromCoords(lab.GetMazeHeight()-2, lab.GetMazeWidth()-2); //goal's node index
+    int goal_node = graph.GetIndexFromCoords(lab.GetMazeHeight()-2, lab.GetMazeWidth()-2); //goal's node index
     //std::cout << lab.GetMazeHeight() << ' ' << lab.GetMazeWidth() << '\n';
     //return 1;
 
@@ -99,17 +102,18 @@ int main(){
         x = lowest_f_score(f_score, discovered_nodes); //find node with the lowest f(x).
 
         if(x == goal_node){
-            reconstruct_path(came_from, goal_node, grph);
-            return 0;
+            reconstruct_path(came_from, goal_node, graph);
+            return;
         }
 
-        for(int node_index : grph.GetAdjacentNodeIndicies(x))//adds neighbouring nodes of current node to unvisted_nodes set.
+        for(int node_index : graph.GetAdjacentNodeIndicies(x))//adds neighbouring nodes of current node to unvisted_nodes set.
             adjacent_nodes.insert(node_index);
 
         discovered_nodes.erase(x);
         completed_nodes.insert(x);
 
-        std::cout << "current x: " << grph.GetGraphNode(x)->x << ' ' << grph.GetGraphNode(x)->y << " \n";
+        //std::cout << "current x: " << graph.GetGraphNode(x)->x << ' ' << graph.GetGraphNode(x)->y << " \n";
+        visitOrder.push_back(x);
 
         for(int adjacent_node : adjacent_nodes){ //don't blend the unvisited nodes with adjacent nodes!!! Because node can be adjacent to other node that has been discovered already
 
@@ -121,7 +125,7 @@ int main(){
 
             if(discovered_nodes.find(adjacent_node) == discovered_nodes.end()){//if "adjacent node isn't in discovered nodes yet".
                 discovered_nodes.insert(adjacent_node); //insert the node to the discovered nodes.
-                h_score[adjacent_node] = heuristic_estimation(adjacent_node, grph, lab); //heuristic estimation of distance from current node to the goal node.
+                h_score[adjacent_node] = heuristic_estimation(adjacent_node, graph, lab); //heuristic estimation of distance from current node to the goal node.
                 is_tentative_better = true;
             }
             else if(tentative_g_score < g_score[adjacent_node]){//if "distance of currently considered route (from start to currently inspected adjacent_node) is shorter than the already known one".
@@ -143,10 +147,10 @@ int main(){
     //was used for testing:
     /*std::vector<int> indicies;
 
-    indicies = grph.GetAdjacentNodeIndicies(0);
+    indicies = graph.GetAdjacentNodeIndicies(0);
     
     for(auto node : indicies){
-        std::cout << "node index: " << node << ' ' << grph.GetGraphNode(node)->x << ' ' << grph.GetGraphNode(node)->y << '\n';
+        std::cout << "node index: " << node << ' ' << graph.GetGraphNode(node)->x << ' ' << graph.GetGraphNode(node)->y << '\n';
     }*/
-   return 1;
+   return;
 }

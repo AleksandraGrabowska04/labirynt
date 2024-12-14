@@ -2,6 +2,7 @@
 #include <stack>
 #include <vector>
 #include "graph.h"
+#include "mazemap.h"
 
 namespace Algorithms
 {
@@ -17,5 +18,9 @@ namespace Algorithms
 
     // Dijkstra's algorithm
     std::vector<int> dijkstra(MazeGraph& graph, int startNode, int endNode,
+        std::vector<int>& outNodeVisitOrder);
+
+    // A Star algorithm
+    void a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode,
         std::vector<int>& outNodeVisitOrder);
 }
