@@ -14,4 +14,8 @@ namespace Algorithms
     // usage is the same as dfs, but uses breadth first search
     std::vector<int> bfs(MazeGraph& mazeGraph, int startNode, int endNode,
         std::vector<int>& outNodeVisitOrder);
+
+    // Dijkstra's algorithm
+    std::vector<int> dijkstra(MazeGraph& graph, int startNode, int endNode,
+        std::vector<int>& outNodeVisitOrder);
 }

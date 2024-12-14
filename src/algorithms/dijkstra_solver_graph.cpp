@@ -2,25 +2,27 @@
 #include <queue>
 #include <set>
 #include <iostream>
-#include <../graph.h>
-#include <../mazemap.h>
+#include <./graph.h>
+#include <./mazemap.h>
+#include <algorithms/algorithms.h>
 #include <map>
 #include <climits>
 #include <bits/algorithmfwd.h>
 
-std::vector<int> dijkstra(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder) {
-    std::set<int> visited;  // Zbiór odwiedzonych węzłów
-    std::map<int, int> dist;  // Najkrótsze dystanse
-    std::map<int, int> prev;  // Poprzedniki węzłów
+std::vector<int> Algorithms::dijkstra(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder) {
+    std::set<int> visited;               // Set of visited nodes
+    std::map<int, int> dist;             // Shortest distances from the start node
+    std::map<int, int> prev;             // Predecessors of nodes on the shortest path
 
-    // Inicjalizacja dystansów
-    for (int i = 0; i <= startNode; ++i) {
+    // Initialize distances and predecessors
+    for (int i = 0; i < graph.GetNumVertices(); ++i) {
         dist[i] = INT_MAX;
+        prev[i] = -1;
     }
     dist[startNode] = 0;
 
-    // Kolejka priorytetowa do przetwarzania węzłów
-    using Node = std::pair<int, int>;  // (dystans, węzeł)
+    // Priority queue for processing nodes
+    using Node = std::pair<int, int>;  // (distance, node)
     std::priority_queue<Node, std::vector<Node>, std::greater<>> pq;
     pq.push({0, startNode});
 
@@ -28,83 +30,50 @@ std::vector<int> dijkstra(MazeGraph& graph, int startNode, int endNode, std::vec
         auto [currentDist, currentNode] = pq.top();
         pq.pop();
 
-        // Sprawdź, czy węzeł został już odwiedzony
+        // If the node has already been visited, skip it
         if (visited.find(currentNode) != visited.end()) {
             continue;
         }
 
         visited.insert(currentNode);
-        visitOrder.push_back(currentNode);  // Dodaj do odwiedzonych węzłów
+        visitOrder.push_back(currentNode);  // Add to the list of visited nodes
 
-        // Przerwij, jeśli dotarliśmy do końca
+        //std::cout << "Visiting node " << currentNode << " with distance " << currentDist << std::endl;
+
+        // Check if the end node has been reached
         if (currentNode == endNode) {
+            //std::cout << "Reached end node: " << endNode << std::endl;
             break;
         }
 
-        // Przetwarzanie sąsiadów
+        // Process neighbors
         for (int neighbor : graph.GetAdjacentNodeIndicies(currentNode)) {
             if (visited.find(neighbor) != visited.end()) {
                 continue;
             }
 
-        // Sprawdź, czy nowa ścieżka do sąsiada jest krótsza; jeśli tak, zaktualizuj dystans i dodaj do kolejki
-            int newDist = dist[currentNode] + 1;  // Waga krawędzi = 1
+            int newDist = dist[currentNode] + 1;  // Edge weight = 1
             if (newDist < dist[neighbor]) {
                 dist[neighbor] = newDist;
                 prev[neighbor] = currentNode;
                 pq.push({newDist, neighbor});
+                //std::cout << "Updating distance of node " << neighbor << " to " << newDist << std::endl;
             }
         }
     }
 
-    // Rekonstrukcja ścieżki
+    // Reconstruct the path
     std::vector<int> path;
-    for (int at = endNode; at != 0; at = prev[at]) {
+    for (int at = endNode; at != -1; at = prev[at]) {
         path.push_back(at);
     }
     std::reverse(path.begin(), path.end());
 
-    return path.front() == startNode ? path : std::vector<int>{};
-}
-
-int main() {
-    // Tworzenie mapy labiryntu (na razie z ręcznym wypisaniem ścian)
-   MazeMap maze(10, 10, {
-        {0, 1}, {0, 3}, {0, 5}, {0, 7}, {0, 9},
-        {1, 1}, {1, 3}, {1, 5}, {1, 7}, {1, 9},
-        {2, 1}, {2, 3}, {2, 5}, {2, 7}, {2, 9},
-        {3, 3}, {3, 5}, {3, 7},
-        {4, 1}, {4, 3}, {4, 5}, {4, 7}, {4, 9},
-        {5, 3}, {5, 5}, {5, 7},
-        {6, 1}, {6, 3}, {6, 5}, {6, 7}, {6, 9},
-        {7, 1}, {7, 3}, {7, 5}, {7, 7}, {7, 9},
-        {8, 1}, {8, 3}, {8, 5}, {8, 7}, {8, 9},
-        {9, 1}, {9, 3}, {9, 5}, {9, 7}, {9, 9}
-    });
-    maze.Print();
-
-    // Tworzenie grafu na podstawie mapy
-    MazeGraph graph = maze.ToMazeGraph(1, 1);  // Start grafu od punktu (1, 1)
-
-    // Węzły startowy i końcowy
-    int startNode = graph.GetIndexFromCoords(1, 1);
-    int endNode = graph.GetIndexFromCoords(8, 8);
-
-    // Algorytm Dijkstry
-    std::vector<int> visitOrder; // Wektor przechowujący kolejność odwiedzanych węzłów podczas działania algorytmu
-    std::vector<int> path = dijkstra(graph, startNode, endNode, visitOrder);
-
-    // Wyświetlenie wyników
-    if (path.empty()) {
-        std::cout << "Brak dostępnej ścieżki.\n";
-    } else {
-        std::cout << "Ścieżka: ";
-        for (int node : path) {
-            auto coords = graph.GetGraphNode(node);  // Współrzędne węzła
-            std::cout << "(" << coords->x << ", " << coords->y << ") -> ";
-        }
-        std::cout << "Koniec\n";
+    // Check if the path starts from the start node
+    if (path.front() != startNode) {
+        std::cout << "No path found from " << startNode << " to " << endNode << std::endl;
+        return {};
     }
 
-    return 0;
+    return path;
 }
