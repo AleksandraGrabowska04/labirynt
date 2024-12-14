@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     MazeGraph mazeGraph = mazeMap.ToMazeGraph();
     // dfs
     std::vector<int> dfsNodeVisitOrder;
-    std::vector<int> dfsPath = Algorithms::dfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), dfsNodeVisitOrder);
+    std::vector<int> dfsPath = Algorithms::dfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), dfsNodeVisitOrder);
     std::vector<std::shared_ptr<MazeGraphNode>> nodes;
     std::vector<std::shared_ptr<MazeGraphNode>> history;
     for(auto node : dfsPath)
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 
     // bfs
     std::vector<int> bfsNodeVisitOrder;
-    std::vector<int> bfsPath = Algorithms::bfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), bfsNodeVisitOrder);
+    std::vector<int> bfsPath = Algorithms::bfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), bfsNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : bfsPath)
@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
     }
 */
     std::vector<int> dijkstraNodeVisitOrder;
-    std::vector<int> dijkstraPath = Algorithms::dijkstra(mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), dijkstraNodeVisitOrder);
+    std::vector<int> dijkstraPath = Algorithms::dijkstra(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), dijkstraNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : dijkstraPath)
