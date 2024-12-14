@@ -73,8 +73,8 @@ public class PathManager {
             String pathLine;
             for (int i = 0; (i < labPanel.pathLimit) && (pathLine = pathReader.readLine()) != null; i++) {
                 String[] pathDataIn = pathLine.split(" ");
-                pathArr[i][0] = Integer.parseInt(pathDataIn[0]);
-                pathArr[i][1] = Integer.parseInt(pathDataIn[1]);
+                pathArr[i][1] = Integer.parseInt(pathDataIn[0]);
+                pathArr[i][0] = Integer.parseInt(pathDataIn[1]);
                 this.pathMax++;
             }
             pathReader.close();
