@@ -100,7 +100,8 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
     while(!discovered_nodes.empty()){
 
         x = lowest_f_score(f_score, discovered_nodes); //find node with the lowest f(x).
-
+        visitOrder.push_back(x);
+        
         if(x == goal_node){
             reconstruct_path(came_from, goal_node, graph);
             return;
@@ -113,7 +114,6 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
         completed_nodes.insert(x);
 
         //std::cout << "current x: " << graph.GetGraphNode(x)->x << ' ' << graph.GetGraphNode(x)->y << " \n";
-        visitOrder.push_back(x);
 
         for(int adjacent_node : adjacent_nodes){ //don't blend the unvisited nodes with adjacent nodes!!! Because node can be adjacent to other node that has been discovered already
 
