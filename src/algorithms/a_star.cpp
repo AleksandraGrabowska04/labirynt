@@ -26,22 +26,31 @@ int lowest_f_score(std::map<int, int>& f_score, std::set<int>& discovered_nodes)
     return lowest_score_node;
 }
 
-void reconstruct_path(std::map<int, int>& came_from, int goal_node_index, MazeGraph& graph){
+std::vector<int> reconstruct_path(std::map<int, int>& came_from, int goal_node_index, MazeGraph& graph){
 
-    std::vector<MazeGraphNode> path;
-    path.push_back(*graph.GetGraphNode(goal_node_index));
+    std::vector<int> reversed_node_path; //order is reversed because of adding (pushing back) elements onto a/the "stack" (vector) - maybe solve this better later.
+    std::vector<int> ordered_path; //properly ordered path.
+    reversed_node_path.push_back(goal_node_index);
     int current_node = goal_node_index; //a currently checked node index.
 
     while(came_from[current_node] != -1){
 
         current_node = came_from[current_node]; //assigns index of node from the previous step of "the cheapest" path into the current_node.
-        path.push_back(*graph.GetGraphNode(current_node)); //adds index of the current node to the end of the path vector.
+        reversed_node_path.push_back(current_node); //adds index of the current node to the end of the path vector.
 
     }
 
     /*for(int i = path.size()-1; i > -1; i--){
         std::cout << path[i].x << ' ' << path[i].y << '\n';
     }*/
+
+    //properly ordering the full node labyrinth solution path (reconstructing the proper path).
+    for(int i = reversed_node_path.size()-1; i > -1; i--){
+        ordered_path.push_back(reversed_node_path[i]);
+    }
+
+    return ordered_path;
+
 }
 
 int heuristic_estimation(int x, MazeGraph& graph, MazeMap& lab){ //heuristic estimation of distance from x node to the goal node.
@@ -59,7 +68,7 @@ int heuristic_estimation(int x, MazeGraph& graph, MazeMap& lab){ //heuristic est
     //c. write method for it (like: getGoalNode) inside "graph.cpp" (The MazeGraph's class/data structure file) or some similar solution.
 }
 
-void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder){
+std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder){
 
     //MazeMap lab("../maze.txt"); //Labyrinth's map (and data structure containing it).
     //MazeGraph graph = lab.ToMazeGraph(); //graph representation of the map.
@@ -103,10 +112,8 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
         x = lowest_f_score(f_score, discovered_nodes); //find node with the lowest f(x).
         visitOrder.push_back(x);
 
-        if(x == goal_node){
-            reconstruct_path(came_from, goal_node, graph);
-            return;
-        }
+        if(x == goal_node)
+            return reconstruct_path(came_from, goal_node, graph);
 
         adjacent_nodes.clear();
         // Fixed!!! (the problem was here)
@@ -156,5 +163,6 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
     for(auto node : indicies){
         std::cout << "node index: " << node << ' ' << graph.GetGraphNode(node)->x << ' ' << graph.GetGraphNode(node)->y << '\n';
     }*/
-   return;
+   return (std::vector<int>)NULL;
+   //maybe do something like try-catch instead of this later.
 }

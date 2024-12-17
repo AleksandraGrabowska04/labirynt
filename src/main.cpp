@@ -120,20 +120,20 @@ int main(int argc, char* argv[])
 
     // A star
     std::vector<int> aStarNodeVisitOrder;
-    /*std::vector<int> aStarPath = */
-    Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), aStarNodeVisitOrder);
+    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), aStarNodeVisitOrder);
     nodes.clear();
     history.clear();
-    /*for(auto node : aStarPath)
+    for(auto node : aStarPath)
     {
         nodes.push_back(mazeGraph.GetGraphNode(node));
-    }*/
+    }
     for(auto node : aStarNodeVisitOrder)
     {
         history.push_back(mazeGraph.GetGraphNode(node));
     }
 
-    //WriteGraphNodesToTextFile("output/a_star_path.txt", nodes);
+    //Saving algo results to the text files.
+    WriteGraphNodesToTextFile("output/a_star_path.txt", nodes);
     WriteGraphNodesToTextFile("output/a_star_visit_order.txt", history);
 
     return 0;
