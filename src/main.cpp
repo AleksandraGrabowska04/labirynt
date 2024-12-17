@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 
     // A star
     std::vector<int> aStarNodeVisitOrder;
-    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(12, 4), aStarNodeVisitOrder);
+    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), aStarNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : aStarPath)
