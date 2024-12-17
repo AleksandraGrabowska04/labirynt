@@ -86,7 +86,8 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
 
     int x = 0; //describe this later: node with the lowest f(x) (heuristics) score (?)
     //can rename it as current_node or something like "currently checked node"...
-    std::map<int, int> came_from; //came_from map is information about "last step" of the cheapest path (according to f(x))
+    std::map<int, int> came_from; //came_from map is information about "last step" of the cheapest path (according to f(x)).
+    //theoreeeeeticaaaally, could have used std::stack for that - maybe do that later.
     //i.e: what was the index of the last node before the currently chosen node (also distinguished by index).
     came_from[0] = -1;
 
@@ -101,11 +102,14 @@ void Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNo
 
         x = lowest_f_score(f_score, discovered_nodes); //find node with the lowest f(x).
         visitOrder.push_back(x);
-        
+
         if(x == goal_node){
             reconstruct_path(came_from, goal_node, graph);
             return;
         }
+
+        adjacent_nodes.clear();
+        // Fixed!!! (the problem was here)
 
         for(int node_index : graph.GetAdjacentNodeIndicies(x))//adds neighbouring nodes of current node to unvisted_nodes set.
             adjacent_nodes.insert(node_index);
