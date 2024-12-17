@@ -5,9 +5,9 @@
 - [x] Proceduralne generowanie labiryntu w postaci wstępnej (numerycznej/macierzowej) (w C) (tygodnie 1-5):
     - [x] Algorytm generacji labiryntu (tygodnie 1-3).
     - [x] Zamiana labiryntu w postaci danych/postaci numerycznej na plik tekstowy (plik ".txt") (tygodnie 4-5).
-- [ ] Algorytm A* (A gwiazdka) (w C) (tygodnie 6+).
-    - [ ] prosta implementacja algorytmu.
-    - [ ] opracowanie w oparciu o własną strukturę danych.
+- [x] Algorytm A* (A gwiazdka) (w C) (tygodnie 6+).
+    - [x] prosta implementacja algorytmu.
+    - [x] opracowanie w oparciu o własną strukturę danych.
 
 ### Krystian Dzikiewicz:
 
@@ -20,7 +20,7 @@
 - [x] Algorytm Dijkstry (tygodnie 2+).
     - [x] ogólna implementacja algorytmu.
     - [x] implementacja na własnej strukturze danych (grafowa).
-    - [ ] opracowanie w oparciu o nową strukturę danych
+    - [x] opracowanie w oparciu o nową strukturę danych
 - [ ] Generowanie wykresów (mathplotlib) (tygodnie 4+).
 
 ### Jakub Markowski:
@@ -33,6 +33,16 @@
     - [ ] doszlifowywanie grafiki (tygodnie 10+)\
     \
 \
+
+### Still to do:
+
+- [ ] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
+    - [ ] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy parti programu.
+    - [ ] Dodanie (funkcji z) "maze_generator.C" jako części "main.cpp"
+    - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal) 
+    - [ ] Naprawienie problemów i niedociągnięć z xmake.
+- [ ] (Opcjonalnie) Graficzny Interfejs Użytkownika w oknie reprezentacji graficznej.
+
 tydzień 1 = 15.10.2024 - 21.10.2024 \
 tydzień 2 = 22.10.2024 - 28.10.2024 \
 tydzień 3 = 29.10.2024 - 04.11.2024 \
