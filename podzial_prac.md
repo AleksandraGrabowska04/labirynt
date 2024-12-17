@@ -38,10 +38,12 @@
 
 - [ ] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
     - [ ] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy parti programu.
-    - [ ] Dodanie (funkcji z) "maze_generator.C" jako części "main.cpp"
+    - [ ] Dodanie (funkcji z) "maze_generator.c" jako części "main.cpp"
     - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal) 
     - [ ] Naprawienie problemów i niedociągnięć z xmake.
 - [ ] (Opcjonalnie) Graficzny Interfejs Użytkownika w oknie reprezentacji graficznej.
+- [ ] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
+- [ ] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
 
 tydzień 1 = 15.10.2024 - 21.10.2024 \
 tydzień 2 = 22.10.2024 - 28.10.2024 \
