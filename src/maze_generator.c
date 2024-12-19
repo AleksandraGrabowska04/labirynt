@@ -28,11 +28,11 @@
 
 //Throughout this program we will use/interpret "x" as the "row number":
 #define X curr_maze_cell_x
-#define MAZE_HEIGHT 5
+#define MAZE_HEIGHT 10
 
 //and "y" as the "column number":
 #define Y curr_maze_cell_y
-#define MAZE_WIDTH 5
+#define MAZE_WIDTH 10
 
 //(x = row, y = column - as in the standard mathematical m x n (rows x columns) notation).
 
@@ -157,14 +157,14 @@ char** translate_cells(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_
 }
 
 //prints and writes to a file maze in its "translated" (check "translate_cells" function) form.
-void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH]){
+void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH], const char* file_name){
     //kept this way (in 4-dimensions) because "unfortunately" it's objectively more readable.
 
     //our file pointer
     FILE *fptr;
 
     //open a file in writing mode
-    fptr = fopen("maze.txt", "w");
+    fptr = fopen(file_name, "w");
 
     for(int maze_x = 0; maze_x < MAZE_HEIGHT; maze_x++){
 
@@ -193,7 +193,7 @@ void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH]){
     fclose(fptr); 
 }
 
-int main(){
+int create_maze(const char* file_name){
 
     srand(time(NULL));
 
@@ -357,7 +357,7 @@ int main(){
         
     }
     
-    print_maze(translated_maze);
+    print_maze(translated_maze, file_name);
 
     return 0;
 }

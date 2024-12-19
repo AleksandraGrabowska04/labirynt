@@ -5,6 +5,8 @@
 #include <filesystem>
 #include "serialize.h"
 
+extern "C" int create_maze(const char* file_name);
+
 bool isFileValid(const char *fileName)
 {
     std::ifstream f(fileName);
@@ -13,23 +15,31 @@ bool isFileValid(const char *fileName)
 
 int main(int argc, char* argv[])
 {
-    if(argc < 2)
+    if(argc < 3)
     {
-        std::cout << "Usage: " << argv[0] << "<file>" << std::endl;
+        std::cout << "Usage: " << argv[0] << "<output dir> <maze size>" << std::endl;
+        return 0;
+    }
+    const char* outputDir = argv[1];
+    int mazeSize = atoi(argv[2]);
+    if(mazeSize < 3)
+    {
+        std::cout << "Maze size must be at least 3" << std::endl;
         return 1;
     }
-    const char* filename = argv[1];
-    if(!isFileValid(filename))
-    {
-        std::cout << "File not found: " << filename << std::endl;
-        return 1;
-    }
-    std::filesystem::create_directory("output");
-    MazeMap mazeMap(filename);
+    std::filesystem::path fullPath = outputDir;
+    std::filesystem::create_directories(fullPath);
+    std::filesystem::path mazePath = fullPath / "maze.txt";
+    std::string fullPathStr = mazePath.string();
+    const char* mazePathStr = fullPathStr.c_str();
+    create_maze(mazePathStr);
+    MazeMap mazeMap(mazePathStr);
     MazeGraph mazeGraph = mazeMap.ToMazeGraph();
+
+    int targetNode = mazeSize - 2;
     // dfs
     std::vector<int> dfsNodeVisitOrder;
-    std::vector<int> dfsPath = Algorithms::dfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), dfsNodeVisitOrder);
+    std::vector<int> dfsPath = Algorithms::dfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), dfsNodeVisitOrder);
     std::vector<std::shared_ptr<MazeGraphNode>> nodes;
     std::vector<std::shared_ptr<MazeGraphNode>> history;
     for(auto node : dfsPath)
@@ -41,12 +51,12 @@ int main(int argc, char* argv[])
         history.push_back(mazeGraph.GetGraphNode(node));
     }
     //WriteGraphNodesToFile("output/dfs_path.bin", nodes);
-    WriteGraphNodesToTextFile("output/dfs_path.txt", nodes);
-    WriteGraphNodesToTextFile("output/dfs_visit_order.txt", history);
+    WriteGraphNodesToTextFile(fullPath / "dfs_path.txt", nodes);
+    WriteGraphNodesToTextFile(fullPath / "dfs_visit_order.txt", history);
 
     // bfs
     std::vector<int> bfsNodeVisitOrder;
-    std::vector<int> bfsPath = Algorithms::bfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), bfsNodeVisitOrder);
+    std::vector<int> bfsPath = Algorithms::bfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), bfsNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : bfsPath)
@@ -59,8 +69,8 @@ int main(int argc, char* argv[])
     }
 
     //WriteGraphNodesToFile("output/bfs_path.bin", nodes);
-    WriteGraphNodesToTextFile("output/bfs_path.txt", nodes);
-    WriteGraphNodesToTextFile("output/bfs_visit_order.txt", history);
+    WriteGraphNodesToTextFile(fullPath / "bfs_path.txt", nodes);
+    WriteGraphNodesToTextFile(fullPath / "bfs_visit_order.txt", history);
 
     // Dijkstra
 
@@ -82,7 +92,7 @@ int main(int argc, char* argv[])
     }
 */
     std::vector<int> dijkstraNodeVisitOrder;
-    std::vector<int> dijkstraPath = Algorithms::dijkstra(mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), dijkstraNodeVisitOrder);
+    std::vector<int> dijkstraPath = Algorithms::dijkstra(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), dijkstraNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : dijkstraPath)
@@ -115,12 +125,12 @@ int main(int argc, char* argv[])
 */
 
     // Save Dijkstra path and visit order to text files
-    WriteGraphNodesToTextFile("output/dijkstra_path.txt", nodes);
-    WriteGraphNodesToTextFile("output/dijkstra_visit_order.txt", history);
+    WriteGraphNodesToTextFile(fullPath / "dijkstra_path.txt", nodes);
+    WriteGraphNodesToTextFile(fullPath / "dijkstra_visit_order.txt", history);
 
     // A star
     std::vector<int> aStarNodeVisitOrder;
-    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(13, 13), aStarNodeVisitOrder);
+    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), aStarNodeVisitOrder);
     nodes.clear();
     history.clear();
     for(auto node : aStarPath)
@@ -133,8 +143,8 @@ int main(int argc, char* argv[])
     }
 
     //Saving algo results to the text files.
-    WriteGraphNodesToTextFile("output/a_star_path.txt", nodes);
-    WriteGraphNodesToTextFile("output/a_star_visit_order.txt", history);
+    WriteGraphNodesToTextFile(fullPath / "a_star_path.txt", nodes);
+    WriteGraphNodesToTextFile(fullPath / "a_star_visit_order.txt", history);
 
     return 0;
 }

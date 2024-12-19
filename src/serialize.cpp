@@ -1,8 +1,9 @@
 #include <fstream>
 #include <vector>
 #include "graph.h"
+#include <filesystem>
 
-bool WriteGraphNodesToFile(const char* filename, std::vector<std::shared_ptr<MazeGraphNode>> nodes)
+bool WriteGraphNodesToFile(std::filesystem::path filename, std::vector<std::shared_ptr<MazeGraphNode>> nodes)
 {
     std::fstream file;
     file.open(filename, std::ios::out | std::ios::binary);
@@ -24,7 +25,7 @@ bool WriteGraphNodesToFile(const char* filename, std::vector<std::shared_ptr<Maz
     return true;
 }
 
-bool WriteGraphNodesToTextFile(const char* filename , std::vector<std::shared_ptr<MazeGraphNode>> nodes)
+bool WriteGraphNodesToTextFile(std::filesystem::path filename, std::vector<std::shared_ptr<MazeGraphNode>> nodes)
 {
     std::fstream file;
     file.open(filename, std::ios::out);
