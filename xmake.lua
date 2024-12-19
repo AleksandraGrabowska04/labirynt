@@ -4,7 +4,7 @@ set_languages("c++20")
 target("labirynth")
     set_kind("binary")
     add_files("src/*.cpp")
---    add_files("src/*.c")
+    add_files("src/*.c")
     add_files("src/algorithms/*.cpp")
     add_includedirs("src")
 
