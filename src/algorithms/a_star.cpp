@@ -115,8 +115,9 @@ std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNod
         if(x == goal_node)
             return reconstruct_path(came_from, goal_node, graph);
 
-        adjacent_nodes.clear();
+        //adjacent_nodes.clear();
         // Fixed!!! (the problem was here)
+        //Fixed the full solution path display but ruined the visit order vector data - will change/fix this later.
 
         for(int node_index : graph.GetAdjacentNodeIndicies(x))//adds neighbouring nodes of current node to unvisted_nodes set.
             adjacent_nodes.insert(node_index);
