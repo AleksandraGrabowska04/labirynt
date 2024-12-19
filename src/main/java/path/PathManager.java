@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import static java.lang.System.currentTimeMillis;
 
 import javax.imageio.ImageIO;
 
@@ -21,7 +20,10 @@ public class PathManager {
     Tile[] tile;
 
     int pathState;
-    long pathStateTime;
+    boolean pathStatePress;
+
+    int pathSelected;
+    boolean pathSelectedPress;
 
     int[][] pathArr;
     int pathMax;
@@ -35,7 +37,10 @@ public class PathManager {
         this.tile = new Tile[1022];
 
         this.pathState = 0;
-        this.pathStateTime = currentTimeMillis();
+        this.pathStatePress = false;
+
+        this.pathSelected = 0;
+        this.pathSelectedPress = false;
 
         this.pathArr = new int[labPanel.pathLimit][2];
         this.pathMax = 0;
@@ -44,7 +49,7 @@ public class PathManager {
         this.pathCounter = 0;
 
         getTileImage();
-        loadPath();
+        loadPath("/a_star_visit_order.txt");
     }
 
     public void getTileImage() {
@@ -66,9 +71,13 @@ public class PathManager {
         }
     }
 
-    public void loadPath(){
+    public void loadPath(String fileName){
+
+        this.pathArr = new int[labPanel.pathLimit][2];
+        this.pathMax = 0;
+
         try {
-            InputStream pathStream = getClass().getResourceAsStream("/path.txt");
+            InputStream pathStream = getClass().getResourceAsStream(fileName);
             BufferedReader pathReader = new BufferedReader(new InputStreamReader(pathStream));
             String pathLine;
             for (int i = 0; (i < labPanel.pathLimit) && (pathLine = pathReader.readLine()) != null; i++) {
@@ -84,7 +93,7 @@ public class PathManager {
     }
 
     public void update(KeyHandler keyH){
-        if((currentTimeMillis() - this.pathStateTime > 2000) && (keyH.inputSpace == true)){
+        if((this.pathStatePress == false) && (keyH.inputSpace == true)){
             switch(this.pathState) {
                 case 0 -> {
                     this.pathState = 1;
@@ -98,12 +107,41 @@ public class PathManager {
                     this.pathCounter = 0;
                 }
             }
-            this.pathStateTime = currentTimeMillis();
+            this.pathStatePress = true;
+        }else if((this.pathStatePress == true) && (keyH.inputSpace == false)){
+            this.pathStatePress = false;
         }
+
+        if((this.pathSelectedPress == false) && (keyH.inputArrowRight == true)){
+            this.pathState = 0;
+            this.pathCounter = 0;
+            switch(this.pathSelected) {
+                case 0 -> {
+                    this.pathSelected = 1;
+                    loadPath("/bfs_visit_order.txt");
+                }
+                case 1 -> {
+                    this.pathSelected = 2;
+                    loadPath("/dfs_visit_order.txt");
+                }
+                case 2 -> {
+                    this.pathSelected = 3;
+                    loadPath("/dijkstra_visit_order.txt");
+                }
+                case 3 -> {
+                    this.pathSelected = 0;
+                    loadPath("/a_star_visit_order.txt");
+                }
+            }
+            this.pathSelectedPress = true;
+        }else if((this.pathSelectedPress == true) && (keyH.inputArrowRight == false)){
+            this.pathSelectedPress = false;
+        }
+
         if(this.pathState == 1){
             if(this.pathCounter < this.pathMax){
                 this.frameCounter++;
-                if (this.frameCounter>5){
+                if (this.frameCounter > Math.max(2000/Math.pow(pathMax, 1.1),1)){
                     this.frameCounter = 0;
                     this.pathCounter++;
                 }
