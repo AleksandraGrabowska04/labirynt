@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
     }
     std::filesystem::path fullPath = outputDir;
     std::filesystem::create_directories(fullPath);
-    std::filesystem::path mazePath = fullPath / "maze.txt";
+    std::filesystem::path mazePath = fullPath / "grid.txt";
     std::string fullPathStr = mazePath.string();
     const char* mazePathStr = fullPathStr.c_str();
     create_maze(mazePathStr);
