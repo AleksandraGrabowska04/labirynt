@@ -33,7 +33,7 @@ public class TileManager {
     public void getTileImage() {
         try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
+            tile[0].image = ImageIO.read(getClass().getResourceAsStream("/tiles/white.png"));
             tile[1] = new Tile();
             tile[1].image = ImageIO.read(getClass().getResourceAsStream("/tiles/black.png"));
 
@@ -44,7 +44,7 @@ public class TileManager {
 
     public void loadLabyrinth(){
         try {
-            InputStream gridStream = getClass().getResourceAsStream("/grid2.txt");
+            InputStream gridStream = getClass().getResourceAsStream("/grid.txt");
             BufferedReader gridReader = new BufferedReader(new InputStreamReader(gridStream));
             int rowCounter = 0;
             String xLine;
