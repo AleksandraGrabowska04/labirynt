@@ -33,7 +33,7 @@ a *0* reprezentuje pole puste.
 
 Wejścia i wyjścia:
 
-Przyjęte jest, że wejscie (s) zawsze jest w lewym górnym rogu labiryntu, a wyjście (e) zawsze w prawym dolnym rogu labirytnu.
+Wejście (s) zawsze jest w lewym górnym rogu labiryntu, a wyjście (e) zawsze w prawym dolnym rogu labirytnu.
 
 Przykładowa macierz:
 
@@ -48,13 +48,13 @@ Przykładowa macierz:
 będzie odpowiadać następującemu labiryntowi:
 
 ```
-┌s┬────┐ 
-│ │    │
+┌─┬────┐ 
+│s│    │
 │ │ ┌──┤
 │   │  │
 ├─ ─┘  │
-│      │
-└─────e┘ 
+│     e│
+└──────┘ 
 ```
 
 gdzie:\

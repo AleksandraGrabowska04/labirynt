@@ -21,7 +21,7 @@
     - [x] ogólna implementacja algorytmu.
     - [x] implementacja na własnej strukturze danych (grafowa).
     - [x] opracowanie w oparciu o nową strukturę danych
-- [ ] Generowanie wykresów (mathplotlib) (tygodnie 4+).
+- [x] Generowanie wykresów (mathplotlib) (tygodnie 4+).
 
 ### Jakub Markowski:
 
@@ -48,6 +48,7 @@
 - [ ] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
     - [x] częściowo zrealizowane (na razie po prostu wrzucanie przez program main.cpp plików będących wynikami działań algorytmów na labiryncie do katalogu o ścieżce: *src/main/resources/*).
 - [ ] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
+- [ ] Dynamiczne alokowanie pamięci (rozmiaru struktury danych przechowującej macierz/"tablicę" labiryntu) w "maze_generator.c" zamiast "fixed-size"/rozmiaru o stałej wielkości/liczbie określonej przez macro na początku w definicjach programu - aby było to bardziej kompatybilne z zadeklarowanym już w "main.cpp" przyjmowaniem argumentów z wiersza poleceń (w trakcie wywoływania programu) i w ten sposób określania (***za każdym razem innego - wtedy - z góry niezdefiniowanego***) rozmiaru labiryntu.
 
 tydzień 1 = 15.10.2024 - 21.10.2024 \
 tydzień 2 = 22.10.2024 - 28.10.2024 \
