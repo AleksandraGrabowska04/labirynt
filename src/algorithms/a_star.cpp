@@ -53,11 +53,14 @@ std::vector<int> reconstruct_path(std::map<int, int>& came_from, int goal_node_i
 
 }
 
-int heuristic_estimation(int x, MazeGraph& graph, MazeMap& lab){ //heuristic estimation of distance from x node to the goal node.
+int heuristic_estimation(int x, MazeGraph& graph, int goal_node){ //heuristic estimation of distance from x node to the goal node.
 
-    int heuristic_distance = //heuristically estimated distance.
+    /*int heuristic_distance = //heuristically estimated distance.
     (lab.GetMazeHeight() - 2) - graph.GetGraphNode(x)->x
-    + (lab.GetMazeWidth() - 2) - graph.GetGraphNode(x)->y;
+    + (lab.GetMazeWidth() - 2) - graph.GetGraphNode(x)->y;*/
+    int heuristic_distance = //heuristically estimated distance.
+    (graph.GetGraphNode(goal_node)->x - graph.GetGraphNode(x)->x)
+    + (graph.GetGraphNode(goal_node)->y - graph.GetGraphNode(x)->y);
 
     return heuristic_distance;
 
@@ -68,7 +71,7 @@ int heuristic_estimation(int x, MazeGraph& graph, MazeMap& lab){ //heuristic est
     //c. write method for it (like: getGoalNode) inside "graph.cpp" (The MazeGraph's class/data structure file) or some similar solution.
 }
 
-std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder){
+std::vector<int> Algorithms::a_star(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder){
 
     //MazeMap lab("../maze.txt"); //Labyrinth's map (and data structure containing it).
     //MazeGraph graph = lab.ToMazeGraph(); //graph representation of the map.
@@ -83,13 +86,15 @@ std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNod
     //nodes from the start up to the point n (where n can be a "start" node as well). (function can 
     //othwerwise be described as: "how many moves in order to get to the node n from the starting node").
     //first value is node index, second value is g_score (g(x)).
+    //int goal_node = graph.GetIndexFromCoords(endNode, endNode); //I really don't like how the "endNode"/"targetNode" issue was handled/solved, but it has to do for now. Oh, I was mistaken, nevermind... (it only applies to the solution in "main.cpp")
     g_score[0] = 0; //g_score (distance) for 0 (starting point) is 0 (which is logical).
     std::map<int, int> h_score; //describe this later (heuristics score (h(x))).
-    h_score[0] = heuristic_estimation(0, graph, lab); //check later again
+    h_score[0] = heuristic_estimation(0, graph, endNode); //check later again
     std::map<int, int> f_score; //f(x) = g(x) + h(x) (f_score = g_score + h_score).
     f_score[0] = g_score[0] + h_score[0];
     //                                      AMOUNT_OF_ROWS        AMOUNT_OF_COLUMNS
-    int goal_node = graph.GetIndexFromCoords(lab.GetMazeHeight()-2, lab.GetMazeWidth()-2); //goal's node index
+    //int goal_node = graph.GetIndexFromCoords(lab.GetMazeHeight()-2, lab.GetMazeWidth()-2); //goal's node index
+    //int goal_node = graph.GetIndexFromCoords(endNode, endNode); //I really don't like how the "endNode"/"targetNode" issue was handled/solved, but it has to do for now. Oh, I was mistaken, nevermind... (it only applies to the solution in "main.cpp")
     //std::cout << lab.GetMazeHeight() << ' ' << lab.GetMazeWidth() << '\n';
     //return 1;
 
@@ -112,8 +117,8 @@ std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNod
         x = lowest_f_score(f_score, discovered_nodes); //find node with the lowest f(x).
         visitOrder.push_back(x);
 
-        if(x == goal_node)
-            return reconstruct_path(came_from, goal_node, graph);
+        if(x == endNode)
+            return reconstruct_path(came_from, endNode, graph);
 
         //adjacent_nodes.clear();
         // Fixed!!! (the problem was here)
@@ -137,7 +142,7 @@ std::vector<int> Algorithms::a_star(MazeMap& lab, MazeGraph& graph, int startNod
 
             if(discovered_nodes.find(adjacent_node) == discovered_nodes.end()){//if "adjacent node isn't in discovered nodes yet".
                 discovered_nodes.insert(adjacent_node); //insert the node to the discovered nodes.
-                h_score[adjacent_node] = heuristic_estimation(adjacent_node, graph, lab); //heuristic estimation of distance from current node to the goal node.
+                h_score[adjacent_node] = heuristic_estimation(adjacent_node, graph, endNode); //heuristic estimation of distance from current node to the goal node.
                 is_tentative_better = true;
             }
             else if(tentative_g_score < g_score[adjacent_node]){//if "distance of currently considered route (from start to currently inspected adjacent_node) is shorter than the already known one".
