@@ -30,19 +30,23 @@
         - [x] Przykład reprezentowania graficznego labiryntów tzw. "hard-coded" (tygodnie 1-2).
         - [x] Generowanie reprezentacji graficznej labiryntów na podstawie labiryntu zapisanego w postaci tekstowej (pliku ".txt") (tygodnie 3-5).
     - [x] graficzna reprezentacja/animacja ścieżek (tygodnie 5-9).
-    - [ ] doszlifowywanie grafiki (tygodnie 10+)\
+    - [x] doszlifowywanie grafiki (tygodnie 10+)\
     \
 \
 
 ### Still to do:
 
 - [ ] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
-    - [ ] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy parti programu.
-    - [ ] Dodanie (funkcji z) "maze_generator.c" jako części "main.cpp"
-    - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal) 
-    - [ ] Naprawienie problemów i niedociągnięć z xmake.
+    - [x] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy partii programu.
+    - [x] Dodanie (funkcji z) "maze_generator.c" jako części "main.cpp"
+    - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal)
+        - [x] częściowo wykonane/zrobione
+    - [x] ogólne "czyszczenie" kodu.
+- [ ] Naprawienie problemów i niedociągnięć z xmake.
+    - [x] częściowo wykonane/zrobione
 - [ ] (Opcjonalnie) Graficzny Interfejs Użytkownika w oknie reprezentacji graficznej.
 - [ ] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
+    - [x] częściowo zrealizowane (na razie po prostu wrzucanie przez program main.cpp plików będących wynikami działań algorytmów na labiryncie do katalogu o ścieżce: *src/main/resources/*).
 - [ ] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
 
 tydzień 1 = 15.10.2024 - 21.10.2024 \
