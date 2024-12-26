@@ -4,6 +4,7 @@
 #include <map>
 #include <utility>
 #include <climits>
+#include <algorithm>
 #include "../mazemap.h"
 #include "../graph.h"
 #include "algorithms.h"
@@ -23,17 +24,24 @@ int lowest_f_score(std::map<int, int>& f_score, std::set<int>& discovered_nodes)
     return lowest_score_node;
 }
 
-std::vector<int> reconstruct_path(std::stack<int>& came_from, MazeGraph& graph){
+std::vector<int> reconstruct_path(std::map<int, int>& came_from, int goal_node_index, MazeGraph& graph){
+    
+    //order of nodes is reversed because of adding (pushing back) elements onto a/the "stack" (map)
+    std::vector<int> ordered_path; //properly ordered path.
+    int current_node = goal_node_index; //a currently checked node index.
+    ordered_path.push_back(current_node);
 
-    std::vector<int> ordered_path; //vector holding the properly ordered path - order of the solution path is reversed because of pushing elements onto a stack (order is from last to first).
+    while(came_from[current_node] != -1){
 
-    //we need to reverse the order of the nodes, to display the proper route to the goal node.
-    while(!came_from.empty()){
-        ordered_path.push_back(came_from.top()); //assigns indicies of nodes from "the cheapest" nodes path onto the properly ordered node path.
-        came_from.pop();
+        current_node = came_from[current_node]; //assigns index of node from the previous step of "the cheapest" path into the current_node.
+        ordered_path.push_back(current_node); //adds index of the current node to the end of the path vector.
+
     }
 
-    return ordered_path; //returning properly ordered path
+    //properly ordering the full node labyrinth solution path (reconstructing the proper path).
+    std::reverse(ordered_path.begin(), ordered_path.end());
+
+    return ordered_path;
 
 }
 
@@ -65,9 +73,9 @@ std::vector<int> Algorithms::a_star(MazeGraph& graph, int startNode, int endNode
 
     int x = startNode; //currently checked node.
 
-    std::stack<int> came_from; //came_from map is information about "last step" of the cheapest path (according to f(x)).
+    std::map<int, int> came_from; //came_from map is information about "last step" of the cheapest path (according to f(x)).
     //i.e: what was the index of the last node before the currently chosen node (also distinguished by index).
-    came_from.push(startNode);
+    came_from[startNode] = -1;
 
     int tentative_g_score = 0; //tentative's (currently checked/tried) path's g_score.
     bool is_tentative_better;
@@ -78,8 +86,7 @@ std::vector<int> Algorithms::a_star(MazeGraph& graph, int startNode, int endNode
         visitOrder.push_back(x);
 
         if(x == endNode){
-            came_from.push(endNode);
-            return reconstruct_path(came_from, graph);
+            return reconstruct_path(came_from, endNode, graph);
         }
 
         adjacent_nodes.clear();
@@ -108,7 +115,7 @@ std::vector<int> Algorithms::a_star(MazeGraph& graph, int startNode, int endNode
             }
 
             if(is_tentative_better){
-                came_from.push(adjacent_node);
+                came_from[adjacent_node] = x;
                 g_score[adjacent_node] = tentative_g_score;
                 f_score[adjacent_node] = g_score[adjacent_node] + h_score[adjacent_node];
             }
