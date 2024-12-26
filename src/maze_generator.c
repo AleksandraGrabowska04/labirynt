@@ -79,7 +79,7 @@ void stack_free_elem(struct node **top /*points to the top of the stack*/){ //fr
 
 //translates (returns translated) maze cell to 3x3 (3 by 3) matrix of zero's (0's) and one's (1's) (to make
 //it easier/more compatible with other maze solving algoritmsv and its graphical representation).
-char** translate_cells(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_cell_x, int curr_maze_cell_y){
+char** translate_cell(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_cell_x, int curr_maze_cell_y){
    
     //error/bug check:
 
@@ -107,50 +107,35 @@ char** translate_cells(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_
     //cell's translation/conversion to 3x3 numeric matrix representation:
 
     //describing all of the wall placement possibilities:
-    if(maze[X][Y].x == 0 || maze[X][Y].is_wall_up){ //upper wall.
+    if(maze[X][Y].x == 0 || maze[X][Y].is_wall_up || (X > 0 && maze[X-1][Y].is_wall_down)){ //upper wall.
         translated_form[0][0] = 1;
         translated_form[0][1] = 1;
         translated_form[0][2] = 1;
     }
 
-    if(maze[X][Y].y == MAZE_WIDTH-1 || maze[X][Y].is_wall_right){ //right wall.
+    if(maze[X][Y].y == MAZE_WIDTH-1 || maze[X][Y].is_wall_right || (Y < MAZE_WIDTH-1 && maze[X][Y+1].is_wall_left)){ //right wall.
         translated_form[0][2] = 1;
         translated_form[1][2] = 1;
         translated_form[2][2] = 1;
     }
 
-    if(maze[X][Y].x == MAZE_HEIGHT-1 || maze[X][Y].is_wall_down){ //bottom wall.
+    if(maze[X][Y].x == MAZE_HEIGHT-1 || maze[X][Y].is_wall_down || (X < MAZE_HEIGHT-1 && maze[X+1][Y].is_wall_up)){ //bottom wall.
         translated_form[2][0] = 1;
         translated_form[2][1] = 1;
         translated_form[2][2] = 1;
     }
 
-    if(maze[X][Y].y == 0 || maze[X][Y].is_wall_left){ //left wall.
+    if(maze[X][Y].y == 0 || maze[X][Y].is_wall_left || (Y > 0 && maze[X][Y-1].is_wall_right)){ //left wall.
         translated_form[0][0] = 1;
         translated_form[1][0] = 1;
         translated_form[2][0] = 1;
     }
 
-    //"Corners":
-    if(X > 0 && Y < MAZE_WIDTH-1) //constraints to make sure we don't "jump out" of the bonds.
-        if(maze[X-1][Y].is_wall_right && maze[X][Y+1].is_wall_up){//upper right corner (we need to check walls of the surrondning cells)
-            translated_form[0][2] = 1; //of cell[X][Y]
-        }
-
-    if(X < MAZE_HEIGHT-1 && Y < MAZE_WIDTH-1)
-        if(maze[X][Y+1].is_wall_down && maze[X+1][Y].is_wall_right){//bottom (lower) right corner
-            translated_form[2][2] = 1;
-        }
-
-    if(X < MAZE_HEIGHT-1 && Y > 0)
-        if(maze[X+1][Y].is_wall_left && maze[X][Y-1].is_wall_down){//bottom left corner
-            translated_form[2][0] = 1;
-        }
-
-    if(X > 0 && Y > 0)
-        if(maze[X][Y-1].is_wall_up && maze[X-1][Y].is_wall_left){//upper left corner
-            translated_form[0][0] = 1;
-        }
+    //it "just works" (filling up the cell's corners)
+    translated_form[0][0] = 1;
+    translated_form[0][2] = 1;
+    translated_form[2][2] = 1;
+    translated_form[2][0] = 1;
 
     return translated_form; //translated cell form
     
@@ -352,7 +337,7 @@ int create_maze(const char* file_name){
     {
         for (int j = 0; j < MAZE_WIDTH; j++)
         {
-            translated_maze[i][j] = translate_cells(maze, i, j);
+            translated_maze[i][j] = translate_cell(maze, i, j);
         }
         
     }
