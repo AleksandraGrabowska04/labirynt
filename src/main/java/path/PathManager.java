@@ -144,6 +144,11 @@ public class PathManager {
                 if (this.frameCounter > Math.max(2000/Math.pow(pathMax, 1.1),1)){
                     this.frameCounter = 0;
                     this.pathCounter++;
+                    if (2000/Math.pow(pathMax, 1.1) < 1) {
+                        for (int i = 1; i < 1/(2000/Math.pow(pathMax, 1.1)); i++) {
+                            this.pathCounter++;
+                        }
+                    }
                 }
             }
         }
@@ -151,10 +156,12 @@ public class PathManager {
 
     public void draw(Graphics2D g2){
         for (int i = 0; pathCounter > 0 && i < pathCounter && this.pathState != 0; i++) {
-            g2.drawImage(tile[i*1020/(Math.max(pathCounter-1, 1))+1].image, (-labPanel.viewX + pathArr[i][0] - tileMng.gridMaxX/2) * labPanel.tileSize + labPanel.screenWidth/2,
-                                        (-labPanel.viewY + pathArr[i][1] - tileMng.gridMaxY/2) * labPanel.tileSize + labPanel.screenHeight/2,
-                                        labPanel.tileSize, labPanel.tileSize, null);
-
+            
+            int tilePosX = (-labPanel.viewX + pathArr[i][0] - tileMng.gridMaxX/2) * labPanel.tileSize + labPanel.screenWidth/2;
+            int tilePosY = (-labPanel.viewY + pathArr[i][1] - tileMng.gridMaxY/2) * labPanel.tileSize + labPanel.screenHeight/2;
+            if(tilePosX >= -labPanel.tileSize && tilePosX < labPanel.screenWidth+labPanel.tileSize && tilePosY >= -labPanel.tileSize && tilePosY < labPanel.screenHeight+labPanel.tileSize){
+                g2.drawImage(tile[i*1020/(Math.max(pathCounter-1, 1))+1].image, tilePosX, tilePosY, labPanel.tileSize, labPanel.tileSize, null);
+            }
         };
     }
 }
