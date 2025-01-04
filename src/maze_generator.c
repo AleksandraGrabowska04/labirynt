@@ -180,7 +180,7 @@ int create_maze(const char* file_name, int maze_height, int maze_width){
     //setting the randomized seed from the current cpu time.
     srand(time(NULL));
 
-    //explain this in more detail later.
+    //Maybe explain this in more detail later.
     maze_height /= 3;
     maze_width /= 3;
 
@@ -375,14 +375,26 @@ int create_maze(const char* file_name, int maze_height, int maze_width){
     
     print_maze(translated_maze, file_name, maze_height, maze_width);
 
+
     //Freeing the memory:
+
+    //Freeing the maze:
+    for (int i = 0; i < maze_height; i++) {
+        free(maze[i]); //freeing struct cell*
+    }
+    free(maze); //freeing struct cell**
+
+    //Freeing the translated_maze:
     for (int i = 0; i < maze_height; i++) {
         for (int j = 0; j < maze_width; j++) {
-            free(translated_maze[i][j]); // Free each individual char* pointer
+            for(int k = 0; k < TRANSL_CELL_HGHT; k++){
+                free(translated_maze[i][j][k]); //freeing char*
+            }
+            free(translated_maze[i][j]); //freeing char**
         }
-        free(translated_maze[i]); // Free the row (array of char* pointers)
+        free(translated_maze[i]); //freeing char***
     }
-    free(translated_maze); // Finally, free the 2D array of pointers
+    free(translated_maze); //freeing char****
 
     return 0;
 }
