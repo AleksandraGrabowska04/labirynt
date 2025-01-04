@@ -28,11 +28,8 @@
 
 //Throughout this program we will use/interpret "x" as the "row number":
 #define X curr_maze_cell_x
-#define MAZE_HEIGHT 10
-
 //and "y" as the "column number":
 #define Y curr_maze_cell_y
-#define MAZE_WIDTH 10
 
 //(x = row, y = column - as in the standard mathematical m x n (rows x columns) notation).
 
@@ -79,7 +76,7 @@ void stack_free_elem(struct node **top /*points to the top of the stack*/){ //fr
 
 //translates (returns translated) maze cell to 3x3 (3 by 3) matrix of zero's (0's) and one's (1's) (to make
 //it easier/more compatible with other maze solving algoritmsv and its graphical representation).
-char** translate_cell(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_cell_x, int curr_maze_cell_y){
+char** translate_cell(struct cell **maze, int curr_maze_cell_x, int curr_maze_cell_y, int maze_height, int maze_width){
    
     //error/bug check:
 
@@ -113,13 +110,13 @@ char** translate_cell(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_c
         translated_form[0][2] = 1;
     }
 
-    if(maze[X][Y].y == MAZE_WIDTH-1 || maze[X][Y].is_wall_right || (Y < MAZE_WIDTH-1 && maze[X][Y+1].is_wall_left)){ //right wall.
+    if(maze[X][Y].y == maze_width-1 || maze[X][Y].is_wall_right || (Y < maze_width-1 && maze[X][Y+1].is_wall_left)){ //right wall.
         translated_form[0][2] = 1;
         translated_form[1][2] = 1;
         translated_form[2][2] = 1;
     }
 
-    if(maze[X][Y].x == MAZE_HEIGHT-1 || maze[X][Y].is_wall_down || (X < MAZE_HEIGHT-1 && maze[X+1][Y].is_wall_up)){ //bottom wall.
+    if(maze[X][Y].x == maze_height-1 || maze[X][Y].is_wall_down || (X < maze_height-1 && maze[X+1][Y].is_wall_up)){ //bottom wall.
         translated_form[2][0] = 1;
         translated_form[2][1] = 1;
         translated_form[2][2] = 1;
@@ -141,8 +138,8 @@ char** translate_cell(struct cell maze[MAZE_HEIGHT][MAZE_WIDTH], int curr_maze_c
     
 }
 
-//prints and writes to a file maze in its "translated" (check "translate_cells" function) form.
-void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH], const char* file_name){
+//prints and writes to a file maze in its "translated" (check "translate_cell" function) form.
+void print_maze(char**** translated_maze, const char* file_name, int maze_height, int maze_width){
     //kept this way (in 4-dimensions) because "unfortunately" it's objectively more readable.
 
     //our file pointer
@@ -151,11 +148,11 @@ void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH], const char* fil
     //open a file in writing mode
     fptr = fopen(file_name, "w");
 
-    for(int maze_x = 0; maze_x < MAZE_HEIGHT; maze_x++){
+    for(int maze_x = 0; maze_x < maze_height; maze_x++){
 
         for(int cell_x = 0; cell_x < TRANSL_CELL_HGHT; cell_x++){
 
-            for (int maze_y = 0; maze_y < MAZE_WIDTH; maze_y++)
+            for (int maze_y = 0; maze_y < maze_width; maze_y++)
             {
                 for (int cell_y = 0; cell_y < TRANSL_CELL_WDTH; cell_y++)
                 {
@@ -178,14 +175,27 @@ void print_maze(char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH], const char* fil
     fclose(fptr); 
 }
 
-int create_maze(const char* file_name){
+int create_maze(const char* file_name, int maze_height, int maze_width){
 
+    //setting the randomized seed from the current cpu time.
     srand(time(NULL));
 
-    struct cell maze[MAZE_HEIGHT][MAZE_WIDTH];
+    //explain this in more detail later.
+    maze_height /= 3;
+    maze_width /= 3;
 
-    for (int i = 0; i < MAZE_HEIGHT; i++)
-        for (int j = 0; j < MAZE_WIDTH; j++){
+    //dynamically allocating the maze size:
+    
+    struct cell **maze = malloc(maze_height * sizeof(struct cell*));
+    //Equivalent of:
+    //struct cell maze[maze_height][maze_width];
+
+    for (int i = 0; i < maze_height; i++)
+        maze[i] = malloc(maze_width * sizeof(struct cell));
+
+    //Filling the dynamically allocated (maze) array with default values.
+    for (int i = 0; i < maze_height; i++)
+        for (int j = 0; j < maze_width; j++){
 
             maze[i][j].is_wall_up = maze[i][j].is_wall_right = 
             maze[i][j].is_wall_down = maze[i][j].is_wall_left = 
@@ -229,11 +239,11 @@ int create_maze(const char* file_name){
 
                 top->cell->is_wall_up = TRUE;
 
-            if(Y+1 < MAZE_WIDTH && maze[X][Y+1].was_visited && last_step != LEFT)
+            if(Y+1 < maze_width && maze[X][Y+1].was_visited && last_step != LEFT)
 
                 top->cell->is_wall_right = TRUE;
 
-            if(X+1 < MAZE_HEIGHT && maze[X+1][Y].was_visited && last_step != UP)
+            if(X+1 < maze_height && maze[X+1][Y].was_visited && last_step != UP)
 
                 top->cell->is_wall_down = TRUE;
 
@@ -244,8 +254,8 @@ int create_maze(const char* file_name){
 
         //out of bounds check:
         if( (X-1 < 0 || maze[X-1][Y].was_visited) && 
-            (Y+1 > MAZE_WIDTH-1 || maze[X][Y+1].was_visited) && 
-            (X+1 > MAZE_HEIGHT-1 || maze[X+1][Y].was_visited) &&
+            (Y+1 > maze_width-1 || maze[X][Y+1].was_visited) && 
+            (X+1 > maze_height-1 || maze[X+1][Y].was_visited) &&
             (Y-1 < 0 || maze[X][Y-1].was_visited))
         {
 
@@ -284,7 +294,7 @@ int create_maze(const char* file_name){
 
                     case RIGHT:
 
-                        if(Y+1 < MAZE_WIDTH && !maze[X][Y+1].was_visited && last_step != LEFT){
+                        if(Y+1 < maze_width && !maze[X][Y+1].was_visited && last_step != LEFT){
 
                             Y++;
                             top = stack_push(top, &maze[X][Y]);
@@ -296,7 +306,7 @@ int create_maze(const char* file_name){
 
                     case DOWN:
 
-                        if(X+1 < MAZE_HEIGHT && !maze[X+1][Y].was_visited && last_step != UP){
+                        if(X+1 < maze_height && !maze[X+1][Y].was_visited && last_step != UP){
 
                             X++;
                             top = stack_push(top, &maze[X][Y]);
@@ -330,19 +340,49 @@ int create_maze(const char* file_name){
 
     }
 
-    //Translating the maze cells:
-    char** translated_maze[MAZE_HEIGHT][MAZE_WIDTH];
+    //Dynamically allocating the maze size (used for maze translation): 
+    //Allocate memory for the first level (array of pointers to rows):
+    char ****translated_maze = (char****)malloc(maze_height * sizeof(char ***));
+    //Equivalent of:
+    //char** translated_maze[maze_height][maze_width];
 
-    for (int i = 0; i < MAZE_HEIGHT; i++)
+    //For each row, allocate memory for the second level (array of pointers to columns):
+    for (int i = 0; i < maze_height; i++){
+        translated_maze[i] = (char***)malloc(maze_width * sizeof(char **));
+        
+        //For each cell, allocate memory for the character pointer:
+        for (int j = 0; j < maze_width; j++){
+
+            translated_maze[i][j] = (char**)malloc(sizeof(char *));
+
+            for(int k = 0; k < TRANSL_CELL_HGHT; k++){
+                translated_maze[i][j][k] = (char*)malloc(sizeof(char) * TRANSL_CELL_WDTH);
+            }
+        }
+        //!Typecasts added for the clarity sake and type safety.
+    }
+
+    //Translating the maze cells:
+
+    for (int i = 0; i < maze_height; i++)
     {
-        for (int j = 0; j < MAZE_WIDTH; j++)
+        for (int j = 0; j < maze_width; j++)
         {
-            translated_maze[i][j] = translate_cell(maze, i, j);
+            translated_maze[i][j] = translate_cell(maze, i, j, maze_height, maze_width);
         }
         
     }
     
-    print_maze(translated_maze, file_name);
+    print_maze(translated_maze, file_name, maze_height, maze_width);
+
+    //Freeing the memory:
+    for (int i = 0; i < maze_height; i++) {
+        for (int j = 0; j < maze_width; j++) {
+            free(translated_maze[i][j]); // Free each individual char* pointer
+        }
+        free(translated_maze[i]); // Free the row (array of char* pointers)
+    }
+    free(translated_maze); // Finally, free the 2D array of pointers
 
     return 0;
 }

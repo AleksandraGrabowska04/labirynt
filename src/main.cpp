@@ -5,7 +5,7 @@
 #include <filesystem>
 #include "serialize.h"
 
-extern "C" int create_maze(const char* file_name);
+extern "C" int create_maze(const char* file_name, int maze_height, int maze_width);
 
 bool isFileValid(const char *fileName)
 {
@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 {
     if(argc < 3)
     {
-        std::cout << "Usage: " << argv[0] << "<output dir> <maze size>" << std::endl;
+        std::cout << "Usage: " << argv[0] << "<output dir> <maze n size (nxn) (divisible by 3)>" << std::endl;
         return 0;
     }
     const char* outputDir = argv[1];
@@ -61,8 +61,8 @@ int main(int argc, char* argv[])
     std::string fullPathStr = mazePath.string();
     const char* mazePathStr = fullPathStr.c_str();
 
-    //Generating (randomly) the maze.
-    create_maze(mazePathStr);
+    //Randomly generating the new maze.
+    create_maze(mazePathStr, mazeSize, mazeSize);
     //Storing a maze inside the custom data structure (reading and converting from generated labyrinth's matrix given in raw txt data).
     MazeMap mazeMap(mazePathStr);
     //Transfoming maze to a graph form.
