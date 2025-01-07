@@ -32,6 +32,7 @@ bool WriteGraphNodesToTextFile(std::filesystem::path filename, std::vector<std::
     if(file.good() == false)
         return false;
 
+    file << nodes.size() << std::endl;
     for(const auto &node : nodes)
     {
         if(!node)
