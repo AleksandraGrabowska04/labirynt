@@ -7,8 +7,10 @@
 #include <algorithms/algorithms.h>
 #include <map>
 #include <climits>
-#include <bits/algorithmfwd.h>
 #include <algorithm>
+#ifdef __GNUC__
+#include <bits/algorithmfwd.h>
+#endif
 
 std::vector<int> Algorithms::dijkstra(MazeGraph& graph, int startNode, int endNode, std::vector<int>& visitOrder) {
     std::set<int> visited;               // Set of visited nodes
