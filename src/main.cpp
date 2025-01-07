@@ -5,7 +5,7 @@
 #include <filesystem>
 #include "serialize.h"
 
-extern "C" int create_maze(const char* file_name);
+extern "C" int create_maze(const char* file_name, int maze_height, int maze_width);
 
 bool isFileValid(const char *fileName)
 {
@@ -13,11 +13,39 @@ bool isFileValid(const char *fileName)
     return f.good();
 }
 
+//Tests the given algorithm's maze/labyrinth solving and writes its results to the text files.
+void testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)(MazeGraph& mazeGraph, 
+        int startNode, int endNode, std::vector<int>& outNodeVisitOrder), 
+        std::filesystem::path fullDirPath, const char* visitOrderFileName, const char* fullPathFileName){
+
+    std::vector<int> nodeVisitOrder; //full history (order) of node visited.
+    std::vector<int> fullNodePath; //full *solved* maze path.
+
+    fullNodePath = algo(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), nodeVisitOrder);
+
+    std::vector<std::shared_ptr<MazeGraphNode>> graphNodesVisitOrder; //names are self-explanatory (converting nodeVisitOrder and fullNodePath to their counterparts in actual maze nodes (MazeGraphNode's)). 
+    std::vector<std::shared_ptr<MazeGraphNode>> fullgraphNodePath;
+
+    for(auto node : nodeVisitOrder)
+    {
+        graphNodesVisitOrder.push_back(mazeGraph.GetGraphNode(node));
+    }
+    for(auto node : fullNodePath)
+    {
+        fullgraphNodePath.push_back(mazeGraph.GetGraphNode(node));
+    }
+
+    //Saving the algorithm results to the text files (algorithm which has been run on a maze/run for maze solution/solving).
+    WriteGraphNodesToTextFile(fullDirPath / visitOrderFileName, graphNodesVisitOrder);
+    WriteGraphNodesToTextFile(fullDirPath / fullPathFileName, fullgraphNodePath);
+
+}
+
 int main(int argc, char* argv[])
 {
     if(argc < 3)
     {
-        std::cout << "Usage: " << argv[0] << "<output dir> <maze size>" << std::endl;
+        std::cout << "Usage: " << argv[0] << "<output dir> <maze n size (nxn) (divisible by 3)>" << std::endl;
         return 0;
     }
     const char* outputDir = argv[1];
@@ -27,124 +55,36 @@ int main(int argc, char* argv[])
         std::cout << "Maze size must be at least 3" << std::endl;
         return 1;
     }
-    std::filesystem::path fullPath = outputDir;
-    std::filesystem::create_directories(fullPath);
-    std::filesystem::path mazePath = fullPath / "grid.txt";
+    std::filesystem::path fullDirPath = outputDir;
+    std::filesystem::create_directories(fullDirPath);
+    std::filesystem::path mazePath = fullDirPath / "maze.txt";
     std::string fullPathStr = mazePath.string();
     const char* mazePathStr = fullPathStr.c_str();
-    create_maze(mazePathStr);
+
+    //Randomly generating the new maze.
+    create_maze(mazePathStr, mazeSize, mazeSize);
+    //Storing a maze inside the custom data structure (reading and converting from generated labyrinth's matrix given in raw txt data).
     MazeMap mazeMap(mazePathStr);
+    //Transfoming maze to a graph form.
     MazeGraph mazeGraph = mazeMap.ToMazeGraph();
 
     int targetNode = mazeSize - 2;
+
     // dfs
-    std::vector<int> dfsNodeVisitOrder;
-    std::vector<int> dfsPath = Algorithms::dfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), dfsNodeVisitOrder);
-    std::vector<std::shared_ptr<MazeGraphNode>> nodes;
-    std::vector<std::shared_ptr<MazeGraphNode>> history;
-    for(auto node : dfsPath)
-    {
-        nodes.push_back(mazeGraph.GetGraphNode(node));
-    }
-    for(auto node : dfsNodeVisitOrder)
-    {
-        history.push_back(mazeGraph.GetGraphNode(node));
-    }
-    //WriteGraphNodesToFile("output/dfs_path.bin", nodes);
-    WriteGraphNodesToTextFile(fullPath / "dfs_path.txt", nodes);
-    WriteGraphNodesToTextFile(fullPath / "dfs_visit_order.txt", history);
+    testAlgorithm(mazeGraph, targetNode, Algorithms::dfs, fullDirPath,
+                 "dfs_visit_order.txt", "dfs_path.txt");
 
     // bfs
-    std::vector<int> bfsNodeVisitOrder;
-    std::vector<int> bfsPath = Algorithms::bfs(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), bfsNodeVisitOrder);
-    nodes.clear();
-    history.clear();
-    for(auto node : bfsPath)
-    {
-        nodes.push_back(mazeGraph.GetGraphNode(node));
-    }
-    for(auto node : bfsNodeVisitOrder)
-    {
-        history.push_back(mazeGraph.GetGraphNode(node));
-    }
-
-    //WriteGraphNodesToFile("output/bfs_path.bin", nodes);
-    WriteGraphNodesToTextFile(fullPath / "bfs_path.txt", nodes);
-    WriteGraphNodesToTextFile(fullPath / "bfs_visit_order.txt", history);
+    testAlgorithm(mazeGraph, targetNode, Algorithms::bfs, fullDirPath,
+                 "bfs_visit_order.txt", "bfs_path.txt");
 
     // Dijkstra
-
-/*
-    std::cout << "MazeGraph nodes and their neighbors:" << std::endl;
-
-    for (int node = 0; node < mazeGraph.GetNumVertices(); ++node) { 
-        auto coords = mazeGraph.GetGraphNode(node); // Get the coordinates of the node
-        if (!coords) continue; // Check if the node exists (in case of empty nodes)
-
-        std::cout << "Node " << node << " at coords (" << coords->x << ", " << coords->y << ") has neighbors: ";
-        for (int neighbor : mazeGraph.GetAdjacentNodeIndicies(node)) { // Get the neighbors of the node
-            auto neighborCoords = mazeGraph.GetGraphNode(neighbor); // Get the coordinates of the neighbor
-            if (neighborCoords) {
-                std::cout << neighbor << " (" << neighborCoords->x << ", " << neighborCoords->y << ") ";
-            }
-        }
-        std::cout << std::endl;
-    }
-*/
-    std::vector<int> dijkstraNodeVisitOrder;
-    std::vector<int> dijkstraPath = Algorithms::dijkstra(mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), dijkstraNodeVisitOrder);
-    nodes.clear();
-    history.clear();
-    for(auto node : dijkstraPath)
-    {
-        nodes.push_back(mazeGraph.GetGraphNode(node));
-    }
-    for(auto node : dijkstraNodeVisitOrder)
-    {
-        history.push_back(mazeGraph.GetGraphNode(node));
-    }
-
-/*
-    // Display the path in the terminal
-    std::cout << "Dijkstra Path:" << std::endl;
-    if (nodes.empty()) {
-        std::cout << "No path found." << std::endl;
-    } else {
-        for (const auto& node : nodes) {
-            std::cout << "(" << node->x << ", " << node->y << ") -> ";
-        }
-        std::cout << "End" << std::endl;
-    }
-
-    // Display the node visit order in the terminal
-    std::cout << "Dijkstra Node Visit Order:" << std::endl;
-    for (const auto& node : history) {
-        std::cout << "(" << node->x << ", " << node->y << ") ";
-    }
-    std::cout << std::endl;
-*/
-
-    // Save Dijkstra path and visit order to text files
-    WriteGraphNodesToTextFile(fullPath / "dijkstra_path.txt", nodes);
-    WriteGraphNodesToTextFile(fullPath / "dijkstra_visit_order.txt", history);
+    testAlgorithm(mazeGraph, targetNode, Algorithms::dijkstra, fullDirPath,
+                 "dijkstra_visit_order.txt", "dijkstra_path.txt");
 
     // A star
-    std::vector<int> aStarNodeVisitOrder;
-    std::vector<int> aStarPath = Algorithms::a_star(mazeMap, mazeGraph, 0, mazeGraph.GetIndexFromCoords(targetNode, targetNode), aStarNodeVisitOrder);
-    nodes.clear();
-    history.clear();
-    for(auto node : aStarPath)
-    {
-        nodes.push_back(mazeGraph.GetGraphNode(node));
-    }
-    for(auto node : aStarNodeVisitOrder)
-    {
-        history.push_back(mazeGraph.GetGraphNode(node));
-    }
-
-    //Saving algo results to the text files.
-    WriteGraphNodesToTextFile(fullPath / "a_star_path.txt", nodes);
-    WriteGraphNodesToTextFile(fullPath / "a_star_visit_order.txt", history);
+    testAlgorithm(mazeGraph, targetNode, Algorithms::a_star, fullDirPath,
+                 "a_star_visit_order.txt", "a_star_path.txt");
 
     return 0;
 }

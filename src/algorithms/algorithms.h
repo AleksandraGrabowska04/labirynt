@@ -21,6 +21,6 @@ namespace Algorithms
         std::vector<int>& outNodeVisitOrder);
 
     // A Star algorithm
-    std::vector<int> a_star(MazeMap& lab, MazeGraph& graph, int startNode, int endNode,
+    std::vector<int> a_star(MazeGraph& graph, int startNode, int endNode,
         std::vector<int>& outNodeVisitOrder);
 }
