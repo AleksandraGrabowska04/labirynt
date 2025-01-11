@@ -1,11 +1,12 @@
-### Każdy z testowanych algorytmów, wypisuje wynik kolejnych kroków w labiryncie w postaci:
+### Każdy z testowanych algorytmów, wypisuje najpierw rozmiar ***n*** labirytnu o wymiarach *nxn*, a następnie wynik kolejnych kroków w labiryncie w postaci:
 
 ### Pary współrzędnych (kolumna, wiersz) następujących po sobie kroków podczas znajdywania ścieżki za pomocą danych algorytmów.
 
-kolumna wiersz \
+kolumna wiersz (labiryntu) \
 x y
 
 ### Przykład:
+30 \
 1 1 \
 1 2 \
 1 3 \

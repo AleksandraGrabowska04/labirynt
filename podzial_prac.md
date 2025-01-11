@@ -36,7 +36,7 @@
 
 ### Still to do:
 
-- [ ] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
+- [x] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
     - [x] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy partii programu.
     - [x] Dodanie (funkcji z) "maze_generator.c" jako części "main.cpp"
     - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal)
@@ -48,7 +48,7 @@
 - [ ] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
     - [x] częściowo zrealizowane (na razie po prostu wrzucanie przez program main.cpp plików będących wynikami działań algorytmów na labiryncie do katalogu o ścieżce: *src/main/resources/*).
 - [ ] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
-- [ ] Dynamiczne alokowanie pamięci (rozmiaru struktury danych przechowującej macierz/"tablicę" labiryntu) w "maze_generator.c" zamiast "fixed-size"/rozmiaru o stałej wielkości/liczbie określonej przez macro na początku w definicjach programu - aby było to bardziej kompatybilne z zadeklarowanym już w "main.cpp" przyjmowaniem argumentów z wiersza poleceń (w trakcie wywoływania programu) i w ten sposób określania (***za każdym razem innego - wtedy - z góry niezdefiniowanego***) rozmiaru labiryntu.
+- [x] Dynamiczne alokowanie pamięci (rozmiaru struktury danych przechowującej macierz/"tablicę" labiryntu) w "maze_generator.c" zamiast "fixed-size"/rozmiaru o stałej wielkości/liczbie określonej przez macro na początku w definicjach programu - aby było to bardziej kompatybilne z zadeklarowanym już w "main.cpp" przyjmowaniem argumentów z wiersza poleceń (w trakcie wywoływania programu) i w ten sposób określania (***za każdym razem innego - wtedy - z góry niezdefiniowanego***) rozmiaru labiryntu.
 
 tydzień 1 = 15.10.2024 - 21.10.2024 \
 tydzień 2 = 22.10.2024 - 28.10.2024 \
