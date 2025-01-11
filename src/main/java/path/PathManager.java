@@ -19,17 +19,17 @@ public class PathManager {
     TileManager tileMng;
     Tile[] tile;
 
-    int pathState;
+    public int pathState;
     boolean pathStatePress;
 
-    int pathSelected;
+    public int pathSelected;
     boolean pathSelectedPress;
 
     int[][] pathArr;
     int pathMax;
 
     int frameCounter;
-    int pathCounter;
+    public int pathCounter;
 
     public PathManager(LabyrinthPanel labPanel, TileManager tileMng){
         this.labPanel = labPanel;
@@ -134,7 +134,29 @@ public class PathManager {
                 }
             }
             this.pathSelectedPress = true;
-        }else if((this.pathSelectedPress == true) && (keyH.inputArrowRight == false)){
+        }if((this.pathSelectedPress == false) && (keyH.inputArrowLeft == true)){
+            this.pathState = 0;
+            this.pathCounter = 0;
+            switch(this.pathSelected) {
+                case 0 -> {
+                    this.pathSelected = 3;
+                    loadPath("/dijkstra_visit_order.txt");
+                }
+                case 1 -> {
+                    this.pathSelected = 0;
+                    loadPath("/a_star_visit_order.txt");
+                }
+                case 2 -> {
+                    this.pathSelected = 1;
+                    loadPath("/bfs_visit_order.txt");
+                }
+                case 3 -> {
+                    this.pathSelected = 2;
+                    loadPath("/dfs_visit_order.txt");
+                }
+            }
+            this.pathSelectedPress = true;
+        }else if((this.pathSelectedPress == true) && (keyH.inputArrowRight == false) && (keyH.inputArrowLeft == false)){
             this.pathSelectedPress = false;
         }
 

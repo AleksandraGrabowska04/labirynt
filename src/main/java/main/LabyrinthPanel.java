@@ -16,6 +16,7 @@ public class LabyrinthPanel extends JPanel implements Runnable{
     Thread labThread;
     TileManager tileMng = new TileManager(this);
     PathManager pathMng = new PathManager(this, tileMng);
+    UserInterface userInter = new UserInterface(this, tileMng, pathMng);
 
     final public int originalTileSize = 16;
     final int FPS = 30;
@@ -101,5 +102,6 @@ public class LabyrinthPanel extends JPanel implements Runnable{
 
         tileMng.draw(g2);
         pathMng.draw(g2);
+        userInter.draw(g2);
     }
 }

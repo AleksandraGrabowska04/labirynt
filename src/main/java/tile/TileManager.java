@@ -44,11 +44,11 @@ public class TileManager {
 
     public void loadLabyrinth(){
         try {
-            InputStream gridStream = getClass().getResourceAsStream("/grid.txt");
-            BufferedReader gridReader = new BufferedReader(new InputStreamReader(gridStream));
+            InputStream tileStream = getClass().getResourceAsStream("/maze.txt");
+            BufferedReader tileReader = new BufferedReader(new InputStreamReader(tileStream));
             int rowCounter = 0;
             String xLine;
-            while ((xLine = gridReader.readLine()) != null && rowCounter < labPanel.gridLimitY) {
+            while ((xLine = tileReader.readLine()) != null && rowCounter < labPanel.gridLimitY) {
                 int colCounter = 0;
                 String[] xSquares = xLine.split("");
                 for(int i = 0; i < xSquares.length && i < labPanel.gridLimitX; i++) {
@@ -61,7 +61,7 @@ public class TileManager {
                 rowCounter++;
             }
             gridMaxY=rowCounter;
-            gridReader.close();
+            tileReader.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
