@@ -43,13 +43,19 @@ void testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)
 
 int main(int argc, char* argv[])
 {
-    if(argc < 3)
+
+    const char* outputDir;
+    if(argc < 2)
     {
-        std::cout << "Usage: " << argv[0] << "<output dir> <maze n size (nxn) (divisible by 3)>" << std::endl;
+        std::cout << "Usage: " << argv[0] << " <maze n size (n x n, divisible by 3)> <[optional] output dir>" << std::endl;
         return 0;
+        
+    }else if(argc == 2){
+        outputDir = "output";
+    }else{
+        outputDir = argv[2];
     }
-    const char* outputDir = argv[1];
-    int mazeSize = atoi(argv[2]);
+    int mazeSize = atoi(argv[1]);
     if(mazeSize < 3)
     {
         std::cout << "Maze size must be at least 3" << std::endl;
