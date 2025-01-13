@@ -14,9 +14,10 @@ bool isFileValid(const char *fileName)
 }
 
 //Tests the given algorithm's maze/labyrinth solving and writes its results to the text files.
-void testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)(MazeGraph& mazeGraph, 
+std::string testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)(MazeGraph& mazeGraph, 
         int startNode, int endNode, std::vector<int>& outNodeVisitOrder), 
-        std::filesystem::path fullDirPath, const char* visitOrderFileName, const char* fullPathFileName){
+        std::filesystem::path fullDirPath, const char* visitOrderFileName, const char* fullPathFileName, 
+        const char* algorithmName, int mazeSize){
 
     std::vector<int> nodeVisitOrder; //full history (order) of node visited.
     std::vector<int> fullNodePath; //full *solved* maze path.
@@ -38,14 +39,16 @@ void testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)
     //Saving the algorithm results to the text files (algorithm which has been run on a maze/run for maze solution/solving).
     WriteGraphNodesToTextFile(fullDirPath / visitOrderFileName, graphNodesVisitOrder);
     WriteGraphNodesToTextFile(fullDirPath / fullPathFileName, fullgraphNodePath);
-
+    return FormatResults(algorithmName, mazeSize, graphNodesVisitOrder);
 }
 
 int main(int argc, char* argv[])
 {
+    std::stringstream resultsStream;
 
     const char* outputDir = "output";
     std::vector<int> mazeSizes;
+
     if(argc < 2){
         std::cout << "Usage: " << argv[0] << " <maze size numbers n (n x n, each divisible by 3, separated by space)> <[optional] output directory>" << std::endl;
         return 0;
@@ -88,21 +91,30 @@ int main(int argc, char* argv[])
         int targetNode = mazeSize - 2;
 
         // dfs
-        testAlgorithm(mazeGraph, targetNode, Algorithms::dfs, fullDirPath,
-                    "dfs_visit_order.txt", "dfs_path.txt");
+        resultsStream << testAlgorithm(mazeGraph, targetNode, Algorithms::dfs, fullDirPath,
+                    "dfs_visit_order.txt", "dfs_path.txt", "DFS", mazeSize);
 
         // bfs
-        testAlgorithm(mazeGraph, targetNode, Algorithms::bfs, fullDirPath,
-                    "bfs_visit_order.txt", "bfs_path.txt");
+        resultsStream << testAlgorithm(mazeGraph, targetNode, Algorithms::bfs, fullDirPath,
+                    "bfs_visit_order.txt", "bfs_path.txt", "BFS", mazeSize);
 
         // Dijkstra
-        testAlgorithm(mazeGraph, targetNode, Algorithms::dijkstra, fullDirPath,
-                    "dijkstra_visit_order.txt", "dijkstra_path.txt");
+        resultsStream << testAlgorithm(mazeGraph, targetNode, Algorithms::dijkstra, fullDirPath,
+                    "dijkstra_visit_order.txt", "dijkstra_path.txt", "Dijkstra", mazeSize);
 
         // A star
-        testAlgorithm(mazeGraph, targetNode, Algorithms::a_star, fullDirPath,
-                    "a_star_visit_order.txt", "a_star_path.txt");
-    }
+        resultsStream << testAlgorithm(mazeGraph, targetNode, Algorithms::a_star, fullDirPath,
+                    "a_star_visit_order.txt", "a_star_path.txt", "A*", mazeSize);
 
+        std::fstream file;
+        file.open(fullDirPath / "results.txt", std::ios::out);
+        if(file.good() == false)
+        {
+            std::cerr << "Could not write to file: " << fullDirPath / "results.txt" << std::endl;
+            return 1;
+        }
+        file << resultsStream.str();
+        file.close();
+    }
     return 0;
 }
