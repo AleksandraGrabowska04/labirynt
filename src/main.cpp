@@ -44,53 +44,65 @@ void testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> (*algo)
 int main(int argc, char* argv[])
 {
 
-    const char* outputDir;
-    if(argc < 2)
-    {
-        std::cout << "Usage: " << argv[0] << " <maze n size (n x n, divisible by 3)> <[optional] output dir>" << std::endl;
+    const char* outputDir = "output";
+    std::vector<int> mazeSizes;
+    if(argc < 2){
+        std::cout << "Usage: " << argv[0] << " <maze size numbers n (n x n, each divisible by 3, separated by space)> <[optional] output directory>" << std::endl;
         return 0;
-        
-    }else if(argc == 2){
-        outputDir = "output";
-    }else{
-        outputDir = argv[2];
     }
-    int mazeSize = atoi(argv[1]);
-    if(mazeSize < 3)
-    {
-        std::cout << "Maze size must be at least 3" << std::endl;
-        return 1;
+    for(int i = 1; i < argc; i++){
+
+        if(strtol(argv[i], NULL, 10) > 0 && strtol(argv[i], NULL, 10) % 3 == 0){
+
+            mazeSizes.push_back(strtol(argv[i], NULL, 10));
+
+        }else if(strtol(argv[i], NULL, 10) == 0 && i >= 2){ //strtol conversion was invalid or returned 0 and at least one of the previous arguments was indeed proper maze size n number.
+
+            outputDir = argv[i];
+            break;
+
+        }else{
+            std::cout << "Passed improper program argument!!!" << std::endl;
+            std::cout << "Maze size number was not given or invalid" << std::endl; //invalid i.e: either negative or zero number.
+            std::cout << "Usage: " << argv[0] << " <maze size numbers n (n x n, each divisible by 3, separated by space)> <[optional] output directory>" << std::endl;
+            return 1;
+        }
+
     }
+    
     std::filesystem::path fullDirPath = outputDir;
     std::filesystem::create_directories(fullDirPath);
     std::filesystem::path mazePath = fullDirPath / "maze.txt";
     std::string fullPathStr = mazePath.string();
     const char* mazePathStr = fullPathStr.c_str();
 
-    //Randomly generating the new maze.
-    create_maze(mazePathStr, mazeSize, mazeSize);
-    //Storing a maze inside the custom data structure (reading and converting from generated labyrinth's matrix given in raw txt data).
-    MazeMap mazeMap(mazePathStr);
-    //Transfoming maze to a graph form.
-    MazeGraph mazeGraph = mazeMap.ToMazeGraph();
+    for(int mazeSize : mazeSizes){
 
-    int targetNode = mazeSize - 2;
+        //Randomly generating the new maze.
+        create_maze(mazePathStr, mazeSize, mazeSize);
+        //Storing a maze inside the custom data structure (reading and converting from generated labyrinth's matrix given in raw txt data).
+        MazeMap mazeMap(mazePathStr);
+        //Transfoming maze to a graph form.
+        MazeGraph mazeGraph = mazeMap.ToMazeGraph();
 
-    // dfs
-    testAlgorithm(mazeGraph, targetNode, Algorithms::dfs, fullDirPath,
-                 "dfs_visit_order.txt", "dfs_path.txt");
+        int targetNode = mazeSize - 2;
 
-    // bfs
-    testAlgorithm(mazeGraph, targetNode, Algorithms::bfs, fullDirPath,
-                 "bfs_visit_order.txt", "bfs_path.txt");
+        // dfs
+        testAlgorithm(mazeGraph, targetNode, Algorithms::dfs, fullDirPath,
+                    "dfs_visit_order.txt", "dfs_path.txt");
 
-    // Dijkstra
-    testAlgorithm(mazeGraph, targetNode, Algorithms::dijkstra, fullDirPath,
-                 "dijkstra_visit_order.txt", "dijkstra_path.txt");
+        // bfs
+        testAlgorithm(mazeGraph, targetNode, Algorithms::bfs, fullDirPath,
+                    "bfs_visit_order.txt", "bfs_path.txt");
 
-    // A star
-    testAlgorithm(mazeGraph, targetNode, Algorithms::a_star, fullDirPath,
-                 "a_star_visit_order.txt", "a_star_path.txt");
+        // Dijkstra
+        testAlgorithm(mazeGraph, targetNode, Algorithms::dijkstra, fullDirPath,
+                    "dijkstra_visit_order.txt", "dijkstra_path.txt");
+
+        // A star
+        testAlgorithm(mazeGraph, targetNode, Algorithms::a_star, fullDirPath,
+                    "a_star_visit_order.txt", "a_star_path.txt");
+    }
 
     return 0;
 }
