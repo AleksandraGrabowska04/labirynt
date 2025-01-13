@@ -1,24 +1,29 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from collections import defaultdict # Automatically assigns a default value for keys that do not yet exist
+import os
 
-# Reading data from the file
-data = defaultdict(lambda: defaultdict(int)) # Dictionary to store data for the plots
+# Path to the results file
+results_file = os.path.expanduser("~/Desktop/labirynt/build/linux/x86_64/release/output/results.txt")
 
-with open('results.txt', 'r') as file:
+# Dictionary to store data for the plots
+data = defaultdict(lambda: defaultdict(int)) # {maze_size: {algorithm: steps}}
+
+# Reading data from the results file
+with open(results_file, 'r') as file:
     for line in file:
         parts = line.strip().split()
         if len(parts) == 3:
-            maze_size = parts[0]
-            algorithm = parts[1]
-            steps = int(parts[2])
+            algorithm = parts[0]  # Algorithm name
+            steps = int(parts[1])  # Number of steps
+            maze_size = f"{parts[2]}x{parts[2]}"  # Maze size in format "NxN"
             data[maze_size][algorithm] = steps
 
 # Preparing data for the plot
-maze_sizes = data.keys()
+maze_sizes = sorted(data.keys(), key=lambda x: int(x.split('x')[0]))  # Sorting maze sizes numerically
 algorithms = list(next(iter(data.values())).keys()) # Extracting the names of the algorithms
 
-x = np.arange(len(maze_sizes))  # Indices for maze sizes, e.g., x = array([0, 1, 2]) corresponds to indices: '10x10', '20x20', '30x30'
+x = np.arange(len(maze_sizes))  # Indices for maze sizes
 width = 0.2  # Width of the bars
 
 # Generating a bar plot
