@@ -11,6 +11,6 @@
 // Returns true if the operation was successful, false otherwise
 bool WriteGraphNodesToFile(std::filesystem::path, std::vector<std::shared_ptr<MazeGraphNode>> nodes);
 bool WriteGraphNodesToTextFile(std::filesystem::path, std::vector<std::shared_ptr<MazeGraphNode>> nodes);
-std::string FormatResults(const std::string& algorithmName, int mazeSize, const std::vector<std::shared_ptr<MazeGraphNode>>& nodes);
+std::string FormatResults(const std::string& algorithmName, int mazeSize, int nodeCount);
 bool WriteResultsToTextFile(std::filesystem::path filename, 
     const std::string& algorithmName, int mazeSize, std::vector<std::shared_ptr<MazeGraphNode>>& nodes);

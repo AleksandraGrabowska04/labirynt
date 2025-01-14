@@ -43,26 +43,22 @@ bool WriteGraphNodesToTextFile(std::filesystem::path filename, std::vector<std::
     return true;
 }
 
-std::string FormatResults(const std::string& algorithmName, int mazeSize, const std::vector<std::shared_ptr<MazeGraphNode>>& nodes)
+std::string FormatResults(const std::string& algorithmName, int mazeSize, int nodesCount)
 {
     std::stringstream ss;
-    ss << algorithmName << " " << nodes.size() << " " << mazeSize << std::endl;
-    // for(const auto& node : nodes)
-    // {
-    //     ss << node->x << " " << node->y << std::endl;
-    // }
+    ss << algorithmName << " " << nodesCount << " " << mazeSize << std::endl;
     return ss.str();
 }
 
 bool WriteResultsToTextFile(std::filesystem::path filename, 
-    const std::string& algorithmName, int mazeSize, std::vector<std::shared_ptr<MazeGraphNode>>& nodes)
+    const std::string& algorithmName, int mazeSize, const std::vector<std::shared_ptr<MazeGraphNode>>& nodes)
 {
     std::fstream file;
     file.open(filename, std::ios::out);
     if(file.good() == false)
         return false;
     
-    file << FormatResults(algorithmName, mazeSize, nodes);
+    file << FormatResults(algorithmName, mazeSize, nodes.size());
     file.close();
     return true;
 }
