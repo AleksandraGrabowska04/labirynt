@@ -39,7 +39,7 @@ std::string testAlgorithm(MazeGraph mazeGraph, int targetNode, std::vector<int> 
     //Saving the algorithm results to the text files (algorithm which has been run on a maze/run for maze solution/solving).
     WriteGraphNodesToTextFile(fullDirPath / visitOrderFileName, graphNodesVisitOrder);
     WriteGraphNodesToTextFile(fullDirPath / fullPathFileName, fullgraphNodePath);
-    return FormatResults(algorithmName, mazeSize, graphNodesVisitOrder);
+    return FormatResults(algorithmName, mazeSize, graphNodesVisitOrder.size());
 }
 
 int main(int argc, char* argv[])
