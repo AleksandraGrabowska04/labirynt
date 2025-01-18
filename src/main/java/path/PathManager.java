@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -49,7 +51,7 @@ public class PathManager {
         this.pathCounter = 0;
 
         getTileImage();
-        loadPath("/a_star_visit_order.txt");
+        loadPath("a_star_visit_order.txt");
     }
 
     public void getTileImage() {
@@ -77,9 +79,15 @@ public class PathManager {
         this.pathMax = 0;
 
         try {
-            InputStream pathStream = getClass().getResourceAsStream(fileName);
+            InputStream pathStream;
+            if(new File("labirynt\\build\\windows\\x64\\release\\output\\" + fileName).isFile()) {
+                pathStream = new FileInputStream("labirynt\\build\\windows\\x64\\release\\output\\" + fileName);
+            } else {
+                pathStream = new FileInputStream("labirynt\\build\\linux\\x86_64\\release\\output\\" + fileName);
+            }
             BufferedReader pathReader = new BufferedReader(new InputStreamReader(pathStream));
             String pathLine;
+            pathReader.readLine();
             for (int i = 0; (i < labPanel.pathLimit) && (pathLine = pathReader.readLine()) != null; i++) {
                 String[] pathDataIn = pathLine.split(" ");
                 pathArr[i][1] = Integer.parseInt(pathDataIn[0]);
@@ -118,19 +126,19 @@ public class PathManager {
             switch(this.pathSelected) {
                 case 0 -> {
                     this.pathSelected = 1;
-                    loadPath("/bfs_visit_order.txt");
+                    loadPath("bfs_visit_order.txt");
                 }
                 case 1 -> {
                     this.pathSelected = 2;
-                    loadPath("/dfs_visit_order.txt");
+                    loadPath("dfs_visit_order.txt");
                 }
                 case 2 -> {
                     this.pathSelected = 3;
-                    loadPath("/dijkstra_visit_order.txt");
+                    loadPath("dijkstra_visit_order.txt");
                 }
                 case 3 -> {
                     this.pathSelected = 0;
-                    loadPath("/a_star_visit_order.txt");
+                    loadPath("a_star_visit_order.txt");
                 }
             }
             this.pathSelectedPress = true;
@@ -140,19 +148,19 @@ public class PathManager {
             switch(this.pathSelected) {
                 case 0 -> {
                     this.pathSelected = 3;
-                    loadPath("/dijkstra_visit_order.txt");
+                    loadPath("dijkstra_visit_order.txt");
                 }
                 case 1 -> {
                     this.pathSelected = 0;
-                    loadPath("/a_star_visit_order.txt");
+                    loadPath("a_star_visit_order.txt");
                 }
                 case 2 -> {
                     this.pathSelected = 1;
-                    loadPath("/bfs_visit_order.txt");
+                    loadPath("bfs_visit_order.txt");
                 }
                 case 3 -> {
                     this.pathSelected = 2;
-                    loadPath("/dfs_visit_order.txt");
+                    loadPath("dfs_visit_order.txt");
                 }
             }
             this.pathSelectedPress = true;

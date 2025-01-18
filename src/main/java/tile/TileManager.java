@@ -2,6 +2,8 @@ package tile;
 
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -44,7 +46,12 @@ public class TileManager {
 
     public void loadLabyrinth(){
         try {
-            InputStream tileStream = getClass().getResourceAsStream("/maze.txt");
+            InputStream tileStream;
+            if(new File("labirynt\\build\\windows\\x64\\release\\output\\maze.txt").isFile()) {
+                tileStream = new FileInputStream("labirynt\\build\\windows\\x64\\release\\output\\maze.txt");
+            } else {
+                tileStream = new FileInputStream("labirynt\\build\\linux\\x86_64\\release\\output\\maze.txt");
+            }
             BufferedReader tileReader = new BufferedReader(new InputStreamReader(tileStream));
             int rowCounter = 0;
             String xLine;
