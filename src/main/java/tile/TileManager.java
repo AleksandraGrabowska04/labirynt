@@ -47,10 +47,10 @@ public class TileManager {
     public void loadLabyrinth(){
         try {
             InputStream tileStream;
-            if(new File("labirynt\\build\\windows\\x64\\release\\output\\maze.txt").isFile()) {
-                tileStream = new FileInputStream("labirynt\\build\\windows\\x64\\release\\output\\maze.txt");
+            if(new File("labirynt/build/windows/x64/release/output/maze.txt").isFile()) {
+                tileStream = new FileInputStream("labirynt/build/windows/x64/release/output/maze.txt");
             } else {
-                tileStream = new FileInputStream("labirynt\\build\\linux\\x86_64\\release\\output\\maze.txt");
+                tileStream = new FileInputStream("labirynt/build/linux/x86_64/release/output/maze.txt");
             }
             BufferedReader tileReader = new BufferedReader(new InputStreamReader(tileStream));
             int rowCounter = 0;

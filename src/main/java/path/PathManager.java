@@ -80,10 +80,10 @@ public class PathManager {
 
         try {
             InputStream pathStream;
-            if(new File("labirynt\\build\\windows\\x64\\release\\output\\" + fileName).isFile()) {
-                pathStream = new FileInputStream("labirynt\\build\\windows\\x64\\release\\output\\" + fileName);
+            if(new File("labirynt/build/windows/x64/release/output/" + fileName).isFile()) {
+                pathStream = new FileInputStream("labirynt/build/windows/x64/release/output/" + fileName);
             } else {
-                pathStream = new FileInputStream("labirynt\\build\\linux\\x86_64\\release\\output\\" + fileName);
+                pathStream = new FileInputStream("labirynt/build/linux/x86_64/release/output/" + fileName);
             }
             BufferedReader pathReader = new BufferedReader(new InputStreamReader(pathStream));
             String pathLine;
