@@ -13,7 +13,7 @@
 
 - [x] Opracowanie struktury danych, która będzie przechowywała dane ("mapę") labiryntu (C++) (tygodnie 1-2, później poprawki).
 - [x] Algorytmy dfs i bfs (tygodnie 3-5).
-- [ ] Testy jednostkowe (integracja z github CI) (tygodnie 6+)
+- [x] Testy jednostkowe (integracja z github CI) (tygodnie 6+)
 
 ### Ola Grabowska:
 
@@ -39,15 +39,15 @@
 - [x] Poprawki i doszlifowywanie "main.cpp" (tygodnie 10+)
     - [x] "opakowanie" w funkcje powtarzających się/wykonywanych wiele razy partii programu.
     - [x] Dodanie (funkcji z) "maze_generator.c" jako części "main.cpp"
-    - [ ] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal)
+    - [x] (Opcjonalnie) Przyjmowanie argumentów z wywoływania programu przez wiersz poleceń (termninal)
         - [x] częściowo wykonane/zrobione
     - [x] ogólne "czyszczenie" kodu.
-- [ ] Naprawienie problemów i niedociągnięć z xmake.
+- [x] Naprawienie problemów i niedociągnięć z xmake.
     - [x] częściowo wykonane/zrobione
-- [ ] (Opcjonalnie) Graficzny Interfejs Użytkownika w oknie reprezentacji graficznej.
-- [ ] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
+- [xx] (Opcjonalnie) Graficzny Interfejs Użytkownika w oknie reprezentacji graficznej.
+- [xx] Integracja "main.cpp" z "Main.java" (póki co: przyjmowanie plików tekstowych z wynikami generowanymi przez "main.cpp" do "Main.java")
     - [x] częściowo zrealizowane (na razie po prostu wrzucanie przez program main.cpp plików będących wynikami działań algorytmów na labiryncie do katalogu o ścieżce: *src/main/resources/*).
-- [ ] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
+- [xx] Integracja "main.cpp" z tworzeniem wykresów na podstawie wyników (długości/ilości kroków wykonanych przez poszczególne algorytmy).
 - [x] Dynamiczne alokowanie pamięci (rozmiaru struktury danych przechowującej macierz/"tablicę" labiryntu) w "maze_generator.c" zamiast "fixed-size"/rozmiaru o stałej wielkości/liczbie określonej przez macro na początku w definicjach programu - aby było to bardziej kompatybilne z zadeklarowanym już w "main.cpp" przyjmowaniem argumentów z wiersza poleceń (w trakcie wywoływania programu) i w ten sposób określania (***za każdym razem innego - wtedy - z góry niezdefiniowanego***) rozmiaru labiryntu.
 
 tydzień 1 = 15.10.2024 - 21.10.2024 \
